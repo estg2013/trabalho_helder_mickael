@@ -1,4 +1,6 @@
-trabalho_helder_mickael
+Trabalho Programacao ESTG 2013
 =======================
 
-trabalho do helder e do mickael
+Helder Correia
+Mickael Sa
+
