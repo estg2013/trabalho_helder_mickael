@@ -1,7 +1,11 @@
 # depslib dependency file v1.0
-1369174086 source:c:\users\mickael\documents\github\trabalho_helder_mickael\main.c
+1369174925 source:c:\users\mickael\documents\github\trabalho_helder_mickael\main.c
 	<stdio.h>
 	<stdlib.h>
 	<trigame_administracao.h>
 	<trigame_jogo.h>
+
+1369174086 c:\users\mickael\documents\github\trabalho_helder_mickael\\trigame_administracao.h
+
+1369174086 c:\users\mickael\documents\github\trabalho_helder_mickael\\trigame_jogo.h
 
