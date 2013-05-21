@@ -25,7 +25,7 @@ typedef struct{
 
 
 //criar novo utilizador
-utilizador criar_utilizador(char nome[], char password[], int admin)
+utilizador criarUtilizador(char nome[], char password[], int admin)
 {
     utilizador novoUtilizador;
 
@@ -37,15 +37,17 @@ utilizador criar_utilizador(char nome[], char password[], int admin)
 }
 
 
+//criar nova pergunta
+pergunta criarPergunta(int categoria, char npergunta[], char respostaCerta[], char resposta1[], char resposta2[], char resposta3[])
+{
+    pergunta novaPergunta;
 
+    novaPergunta.categoria = categoria;
+    strcpy(novaPergunta.pergunta,npergunta);
+    strcpy(novaPergunta.resposta[0],respostaCerta);
+    strcpy(novaPergunta.resposta[1],resposta1);
+    strcpy(novaPergunta.resposta[2],resposta2);
+    strcpy(novaPergunta.resposta[3],resposta3);
 
-
-
-
-
-
-
-
-
-
-
+    return novaPergunta;
+}
