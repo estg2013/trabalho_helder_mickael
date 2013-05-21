@@ -5,7 +5,6 @@
 
 int main()
 {
-    printf("Hello world!\n");
-    printf("Hello Helder!\n");
+    pergunta pergunta[200];
     return 0;
 }
