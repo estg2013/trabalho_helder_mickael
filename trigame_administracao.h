@@ -36,6 +36,24 @@ utilizador criarUtilizador(char nome[], char password[], int admin)
     return novoUtilizador;
 }
 
+//alterar utilizador
+utilizador alterarUtilizador(utilizador utilizadorAalterar)
+{
+    utilizador utilizadorAlterado;
+
+    utilizadorAlterado = utilizadorAalterar;
+
+    switch(utilizadorAalterar.admin)
+    {
+        case 0:
+            utilizadorAlterado.admin = 1;
+        case 1:
+            utilizadorAlterado.admin = 0;
+    }
+
+    return utilizadorAlterado;
+}
+
 
 //criar nova pergunta
 pergunta criarPergunta(int categoria, char npergunta[], char respostaCerta[], char resposta1[], char resposta2[], char resposta3[])
