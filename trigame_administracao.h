@@ -24,5 +24,28 @@ typedef struct{
 
 
 
+//criar novo utilizador
+utilizador criar_utilizador(char nome[], char password[], int admin)
+{
+    utilizador novoUtilizador;
+
+    strcpy(novoUtilizador.username,nome);
+    strcpy(novoUtilizador.password,password);
+    novoUtilizador.admin = admin;
+
+    return novoUtilizador;
+}
+
+
+
+
+
+
+
+
+
+
+
+
 
 
