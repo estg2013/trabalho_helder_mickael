@@ -43,12 +43,11 @@ utilizador alterarUtilizador(utilizador utilizadorAalterar)
 
     utilizadorAlterado = utilizadorAalterar;
 
-    switch(utilizadorAalterar.admin)
+    if(utilizadorAalterar.admin == 1)
     {
-        case 0:
-            utilizadorAlterado.admin = 1;
-        case 1:
-            utilizadorAlterado.admin = 0;
+        utilizadorAlterado.admin = 0;
+    }else{
+        utilizadorAlterado.admin = 1;
     }
 
     return utilizadorAlterado;
