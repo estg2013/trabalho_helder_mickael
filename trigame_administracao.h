@@ -7,14 +7,16 @@
 
 
 //estrutura de dados para as perguntas e respostas
-typedef struct{
+typedef struct
+{
     int categoria;
     char pergunta[200],resposta[4][200];
 } pergunta;
 
 
 //estrura de dados para os utilizadores
-typedef struct{
+typedef struct
+{
     char username[100];
     char password[100];
     int admin;
@@ -26,7 +28,8 @@ typedef struct{
 /************************** UTILIZADORES *******************************/
 
 //fila de jogadores
-typedef struct lUtilizadores{
+typedef struct lUtilizadores
+{
     utilizador jogador;
     struct lUtilizadores *proximoJogador;
 } listaUtilizadores;
@@ -45,7 +48,7 @@ utilizador parseUtilizador(char utili[], char separador)
 
     tamanhoString = strlen(utili);
 
-    for(i=0;i<tamanhoString;i++) //obter posicao dos separadores na string
+    for(i=0; i<tamanhoString; i++) //obter posicao dos separadores na string
     {
         if(utili[i] == separador)
         {
@@ -55,7 +58,7 @@ utilizador parseUtilizador(char utili[], char separador)
     }
 
     //username
-    for(i=0;i<separadores[0];i++)
+    for(i=0; i<separadores[0]; i++)
     {
         u.username[i] = utili[i];
     }
@@ -63,7 +66,7 @@ utilizador parseUtilizador(char utili[], char separador)
 
     //password
     c=0;
-    for(i=(separadores[0]+1);i<separadores[1];i++)
+    for(i=(separadores[0]+1); i<separadores[1]; i++)
     {
         u.password[c] = utili[i];
         c++;
@@ -75,7 +78,7 @@ utilizador parseUtilizador(char utili[], char separador)
 
     //jogos ganhos
     c=0;
-    for(i=(separadores[2]+1);i<separadores[3];i++)
+    for(i=(separadores[2]+1); i<separadores[3]; i++)
     {
         charTemp[c] = utili[i];
         c++;
@@ -84,7 +87,7 @@ utilizador parseUtilizador(char utili[], char separador)
 
     //jogos perdidos
     c = 0;
-    for(i=(separadores[3]+1);i<tamanhoString;i++)
+    for(i=(separadores[3]+1); i<tamanhoString; i++)
     {
         charTemp[c] = utili[i];
         c++;
@@ -114,20 +117,27 @@ filaUtilizadores lerUtilizadores(char ficheiro[])
     if(!fp) //se o ficheiro de utilizadores existir
     {
         fp = fopen(ficheiro,"w");
-        fprintf(fp,"admin,admin,1,0,0"); //cria o admin se nao existir
+        for(i=0;i<100;i++)
+        {
+            if(i>0) fprintf(fp,"\n");
+            fprintf(fp,"utilizador-%i,admin,%i,%i,%i",rand(),(rand()%2),rand(),rand()); //cria o admin se nao existir
+        }
     }
+    fclose(fp);
 
     fp = fopen(ficheiro,"r"); //abrir o ficheiro em de leitura texto
 
-    while(!feof(fp)) //le ate ao fim do ficheiro
+    while(fgets(linha,200,fp)) //le ate ao fim do ficheiro
     {
-        fgets(linha,200,fp);
-        fUtilizador = parseUtilizador(linha,',');
+        if(strlen(linha) > 0)
+        {
+            fUtilizador = parseUtilizador(linha,',');
 
-        c = malloc(sizeof(listaUtilizadores));
-        c->jogador = fUtilizador;
-        c->proximoJogador = l;
-
+            c = malloc(sizeof(listaUtilizadores));
+            c->jogador = fUtilizador;
+            c->proximoJogador = l;
+            l = c;
+        }
     }
 
     fclose(fp);
@@ -157,7 +167,9 @@ utilizador alterarUtilizador(utilizador utilizadorAalterar)
     if(utilizadorAalterar.admin == 1)
     {
         utilizadorAlterado.admin = 0;
-    }else{
+    }
+    else
+    {
         utilizadorAlterado.admin = 1;
     }
 

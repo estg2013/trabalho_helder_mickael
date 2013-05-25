@@ -3,19 +3,19 @@
 #include <trigame_administracao.h>
 #include <trigame_jogo.h>
 
-void listar(filaUtilizadores f)
+void listar(filaUtilizadores f, float quantidade)
 {
     if(f == NULL)
         return;
-    printf("username: %s\npassword: %s",f->jogador.username,f->jogador.password);
-    listar(f->proximoJogador);
+
+    listar(f->proximoJogador,quantidade+1);
 }
 
 int main()
 {
     filaUtilizadores fU;
     fU = lerUtilizadores("users.db");
-    listar(fU);
+    listar(fU,0);
 
     return 0;
 }
