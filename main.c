@@ -3,9 +3,17 @@
 #include <trigame_administracao.h>
 #include <trigame_jogo.h>
 
+
+
 int main()
 {
-    printf("Hello world!\n");
-    printf("Hello Helder!\n");
+    //filas
+    filaUtilizadores fU;
+    filaPerguntas fP;
+
+    //preencher filas
+    if(fU = lerUtilizadores("users.db")) printf("Utilizadores - OK\n");
+    if(fP = lerPergunta("perguntas.db")) printf("Perguntas - OK\n");
+
     return 0;
 }
