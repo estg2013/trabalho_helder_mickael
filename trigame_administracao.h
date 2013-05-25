@@ -23,6 +23,115 @@ typedef struct{
 } utilizador;
 
 
+/************************** UTILIZADORES *******************************/
+
+//fila de jogadores
+typedef struct lUtilizadores{
+    utilizador jogador;
+    struct lUtilizadores *proximoJogador;
+} listaUtilizadores;
+
+typedef listaUtilizadores* filaUtilizadores;
+
+
+//parse da linha lida do ficheiro de utilizadores
+//WIP
+utilizador parseUtilizador(char utili[], char separador)
+{
+    utilizador u;
+    int tamanhoString,separadores[4];
+    int i,c=0;
+    char charTemp[5];
+
+    tamanhoString = strlen(utili);
+
+    for(i=0;i<tamanhoString;i++) //obter posicao dos separadores na string
+    {
+        if(utili[i] == separador)
+        {
+            separadores[c] = i;
+            c++;
+        }
+    }
+
+    //username
+    for(i=0;i<separadores[0];i++)
+    {
+        u.username[i] = utili[i];
+    }
+
+    //password
+    c=0;
+    for(i=(separadores[0]+1);i<separadores[1];i++)
+    {
+        u.password[c] = utili[i];
+        c++;
+    }
+
+    //admin
+    u.admin =utili[separadores[1]+1] - '0';
+
+    //jogos ganhos
+    c=0;
+    for(i=(separadores[2]+1);i<separadores[3];i++)
+    {
+        charTemp[c] = utili[i];
+        c++;
+    }
+    u.respostas_certas = atoi(charTemp); //converter string de respostas certas para inteiro
+
+    //jogos perdidos
+    c = 0;
+    for(i=(separadores[3]+1);i<tamanhoString;i++)
+    {
+        charTemp[c] = utili[i];
+        c++;
+    }
+    u.respostas_erradas = atoi(charTemp); //converter as respostas erradas para inteiro
+
+    return u;
+}
+
+
+
+
+
+//ler os utilizadores para a fila de utilizadores
+filaUtilizadores lerUtilizadores(char ficheiro[])
+{
+    char linha[200];
+    int i = 0;
+    filaUtilizadores l,c;
+    utilizador fUtilizador; //utilizador para ler a linha do ficheiro
+
+    l = NULL;
+
+    FILE *fp; //apontador para o ficheiro
+    fp = fopen(ficheiro,"r"); //abrir o ficheiro em de leitura texto
+
+    if(!fp) //se o ficheiro de utilizadores existir
+    {
+        fp = fopen(ficheiro,"w");
+        fprintf(fp,"admin,admin,1,0,0"); //cria o admin se nao existir
+    }
+
+    fp = fopen(ficheiro,"r"); //abrir o ficheiro em de leitura texto
+
+    while(!feof(fp)) //le ate ao fim do ficheiro
+    {
+        fgets(linha,200,fp);
+        fUtilizador = parseUtilizador(linha,',');
+
+        c = malloc(sizeof(listaUtilizadores));
+        c->jogador = fUtilizador;
+        c->proximoJogador = l;
+
+    }
+
+    fclose(fp);
+
+    return c;
+}
 
 //criar novo utilizador
 utilizador criarUtilizador(char nome[], char password[], int admin)
@@ -53,7 +162,7 @@ utilizador alterarUtilizador(utilizador utilizadorAalterar)
     return utilizadorAlterado;
 }
 
-
+/********************************* PERGUNTAS *******************************/
 //criar nova pergunta
 pergunta criarPergunta(int categoria, char npergunta[], char respostaCerta[], char resposta1[], char resposta2[], char resposta3[])
 {
