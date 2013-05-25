@@ -59,6 +59,7 @@ utilizador parseUtilizador(char utili[], char separador)
     {
         u.username[i] = utili[i];
     }
+    u.username[i]='\0';
 
     //password
     c=0;
@@ -67,6 +68,7 @@ utilizador parseUtilizador(char utili[], char separador)
         u.password[c] = utili[i];
         c++;
     }
+    u.password[c] = '\0';
 
     //admin
     u.admin =utili[separadores[1]+1] - '0';
