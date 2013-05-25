@@ -57,6 +57,13 @@ utilizador parseUtilizador(char utili[], char separador)
         }
     }
 
+    //verifica se a linha esta em condicoes de ser lida
+    if(c != 4)
+    {
+        printf("ERRO - Ficheiro de utilizadores corrompido!\n");
+        exit(1);
+    }
+
     //username
     for(i=0; i<separadores[0]; i++)
     {
@@ -97,10 +104,6 @@ utilizador parseUtilizador(char utili[], char separador)
     return u;
 }
 
-
-
-
-
 //ler os utilizadores para a fila de utilizadores
 filaUtilizadores lerUtilizadores(char ficheiro[])
 {
@@ -116,6 +119,7 @@ filaUtilizadores lerUtilizadores(char ficheiro[])
 
     if(!fp) //se o ficheiro de utilizadores existir
     {
+        fclose(fp); //TODO: verificar se e necessario fechar o ficheiro
         fp = fopen(ficheiro,"w");
         for(i=0;i<100;i++)
         {
@@ -177,6 +181,116 @@ utilizador alterarUtilizador(utilizador utilizadorAalterar)
 }
 
 /********************************* PERGUNTAS *******************************/
+//struct fila perguntas
+typedef struct lPerguntas{
+    pergunta perg;
+    struct lPerguntas *proximaPergunta;
+} listaPerguntas;
+
+typedef listaPerguntas* filaPerguntas;
+
+//parse da linha com a pergunta
+pergunta parsePergunta(char linha[], char separador)
+{
+    pergunta p;
+    int i, j, c = 0, separadores[5], tamanhoLinha, posicaoRespostas;
+
+    tamanhoLinha = strlen(linha);
+
+    for(i=0;i<tamanhoLinha;i++) //conta o numero de separadores na linha
+    {
+        if(linha[i]==separador)
+        {
+            separadores[c] = i;
+            c++;
+        }
+    }
+
+    if(c != 5) //ficheiro de perguntas corrompido
+    {
+        printf("ERRO - Ficheiro de perguntas e respostas corrompido!\n");
+        exit(1);
+    }
+
+    //categoria da pergunta
+    for(i=0;i<separadores[0];i++)
+    {
+        p.categoria = linha[i] - '0';
+    }
+
+    //pergunta
+    c = 0;
+    for(i=separadores[0]+1;i<separadores[1];i++)
+    {
+        p.pergunta[c] = linha[i];
+        c++;
+    }
+    p.pergunta[c] = '\0';
+
+
+    //respostas
+    for(j=0;j<4;j++)
+    {
+        c = 0;
+
+        //ulima posicao
+        if(j == 3)
+        {
+            posicaoRespostas = tamanhoLinha-1;
+        }else{
+            posicaoRespostas = separadores[2 + j]-1;
+        }
+
+        for(i=separadores[1+j];i<posicaoRespostas;i++)
+        {
+            p.resposta[0+j][c] = linha[i+1];
+            c++;
+        }
+        p.resposta[0+j][c] = '\0';
+    }
+
+    return p;
+}
+
+//funcao para ler as perguntas de um ficheiro e coloca-las numa fila
+filaPerguntas lerPergunta(char ficheiroPerguntas[])
+{
+    FILE *fp;
+    filaPerguntas l,c;
+    char linha[300];
+
+    pergunta fPergunta;
+
+
+    //inicializar apontador para o inicio da fila
+    l = NULL;
+
+    //abrir o ficheiro de perguntas e cria-lo se nao existir
+    fp = fopen(ficheiroPerguntas,"r");
+
+    if(!fp) //se o ficheiro nao existir cria um novo
+    {
+        fclose(fp);
+        fp = fopen(ficheiroPerguntas,"w");
+        fprintf(fp,"1;Quem foi o primeiro rei de Portugal?;D. Afonso Henriques;Helder Postiga;Pinto da Costa;Barack Obama"); //escrever uma pergunta no ficheiro
+        fclose(fp);
+    }
+
+    fp = fopen(ficheiroPerguntas,"r");
+
+    while(fgets(linha,300,fp)) //ler o ficheiro linha a linha ate ao fim
+    {
+        fPergunta = parsePergunta(linha,';'); //dividir a linha numa estrutura para perguntas
+        c = malloc(sizeof(listaPerguntas));
+        c->perg = fPergunta;
+        c->proximaPergunta = l;
+        l = c;
+    }
+
+    return c;
+}
+
+
 //criar nova pergunta
 pergunta criarPergunta(int categoria, char npergunta[], char respostaCerta[], char resposta1[], char resposta2[], char resposta3[])
 {

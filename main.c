@@ -3,19 +3,17 @@
 #include <trigame_administracao.h>
 #include <trigame_jogo.h>
 
-void listar(filaUtilizadores f, float quantidade)
-{
-    if(f == NULL)
-        return;
 
-    listar(f->proximoJogador,quantidade+1);
-}
 
 int main()
 {
+    //filas
     filaUtilizadores fU;
-    fU = lerUtilizadores("users.db");
-    listar(fU,0);
+    filaPerguntas fP;
+
+    //preencher filas
+    if(fU = lerUtilizadores("users.db")) printf("Utilizadores - OK\n");
+    if(fP = lerPergunta("perguntas.db")) printf("Perguntas - OK\n");
 
     return 0;
 }
