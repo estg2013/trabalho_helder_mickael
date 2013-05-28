@@ -14,13 +14,16 @@
 				<Compiler>
 					<Add option="-g" />
 					<Add directory="C:/Users/Burnspirit/Documents/GitHub/trabalho_helder_mickael/" />
+					<Add directory="C:/Users/Mck/Documents/GitHub/trabalho_helder_mickael/" />
 				</Compiler>
 				<ResourceCompiler>
 					<Add directory="C:/Users/Burnspirit/Documents/GitHub/trabalho_helder_mickael/" />
+					<Add directory="C:/Users/Mck/Documents/GitHub/trabalho_helder_mickael/" />
 				</ResourceCompiler>
 				<Linker>
 					<Add option="-lmingw32 -lSDLmain -lSDL -lSDL_mixer -static-libgcc -lSDL_ttf" />
 					<Add directory="C:/Users/Burnspirit/Documents/GitHub/trabalho_helder_mickael/" />
+					<Add directory="C:/Users/Mck/Documents/GitHub/trabalho_helder_mickael/" />
 				</Linker>
 			</Target>
 			<Target title="Release">
