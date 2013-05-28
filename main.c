@@ -24,11 +24,15 @@ int main(int argc, char* args[])
     //definir estrutura para o ecra e inicializar SDL
     SDL_Surface* ecra = NULL;
     SDL_Init(SDL_INIT_EVERYTHING);
+    TTF_Init();
 
     SDL_VideoInfo* info = SDL_GetVideoInfo();
 
     //definir a resolucao do ecra e o numero de cores
-    ecra = SDL_SetVideoMode(1024,768,32,SDL_HWSURFACE);
+    ecra = SDL_SetVideoMode(1024,768,32,SDL_FULLSCREEN);
+
+    //inicializar o som
+    Mix_OpenAudio(44100,MIX_DEFAULT_FORMAT,2,4096);
 
     //titulo da janela
     SDL_WM_SetCaption("TriGame v0.1a",NULL);
