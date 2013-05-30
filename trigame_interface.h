@@ -14,6 +14,8 @@ typedef struct
     SDL_Surface *btNovoJogob;
     SDL_Surface *btOpcoesb;
     SDL_Surface *btSairb;
+    Mix_Music *musica_menu;
+    TTF_Font *font;
 }botoesMenu;
 
 botoesMenu btMenu;
@@ -29,6 +31,10 @@ void carregarRecursos()
     btMenu.btNovoJogob = SDL_LoadBMP("img/novojogob.bmp");
     btMenu.btOpcoesb = SDL_LoadBMP("img/opcoesb.bmp");
     btMenu.btSairb = SDL_LoadBMP("img/sairb.bmp");
+    //som
+    btMenu.musica_menu = Mix_LoadMUS("music/botoes.wav");
+    //font
+    btMenu.font = TTF_OpenFont("font/font1.ttf",28);
 }
 
 
@@ -39,11 +45,6 @@ void menu(SDL_Surface* ecra)
 {
     char texto[100];
     int ratoX, ratoY,but1 = 0, but2 = 0, but3 = 0;
-    Mix_Music *musica_menu = NULL;
-    TTF_Font *font = NULL;
-    font = TTF_OpenFont("font/font1.ttf",28);
-    //som
-    musica_menu = Mix_LoadMUS("music/botoes.wav");
 
     SDL_Event evento;
     SDL_Rect rect = {0,0,100,100};
@@ -51,7 +52,7 @@ void menu(SDL_Surface* ecra)
 
     SDL_Color cor1 = {0,0,0};
 
-    msg = TTF_RenderText_Solid(font,"Versao Alpha",cor1);
+    msg = TTF_RenderText_Solid(btMenu.font,"Versao Alpha",cor1);
 
     while(1)
     {
@@ -83,7 +84,7 @@ void menu(SDL_Surface* ecra)
                     rect.y = 300;
                     SDL_BlitSurface(btMenu.btNovoJogob,NULL,ecra,&rect);
                     if(but1 == 0)
-                        Mix_PlayMusic(musica_menu,1);
+                        Mix_PlayMusic(btMenu.musica_menu,1);
                         but1 = 1;
                         but2 = but3 = 0;
             }else if(ratoX > 351 && ratoX < 661 && ratoY > 374 && ratoY < 444)
@@ -93,7 +94,7 @@ void menu(SDL_Surface* ecra)
                     rect.y = 370;
                     SDL_BlitSurface(btMenu.btOpcoesb,NULL,ecra,&rect);
                     if(but2 == 0)
-                        Mix_PlayMusic(musica_menu,1);
+                        Mix_PlayMusic(btMenu.musica_menu,1);
                     but2 = 1;
                     but1 = but3 = 0;
             }else if(ratoX > 351 && ratoX < 661 && ratoY > 444 && ratoY < 515)
@@ -103,7 +104,7 @@ void menu(SDL_Surface* ecra)
                     rect.y = 440;
                     SDL_BlitSurface(btMenu.btSairb,NULL,ecra,&rect);
                     if(but3 == 0)
-                        Mix_PlayMusic(musica_menu,1);
+                        Mix_PlayMusic(btMenu.musica_menu,1);
                     but3 = 1;
                     but2 = but1 = 0;
             }else{

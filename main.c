@@ -20,8 +20,7 @@ int main(int argc, char* args[])
     * SDL
     *   iniciar o frontend
     */
-    //funcoes iniciais
-    carregarRecursos(); //carregar imagens, sons e fonts
+
 
     //definir estrutura para o ecra e inicializar SDL
     SDL_Surface* ecra = NULL;
@@ -42,6 +41,9 @@ int main(int argc, char* args[])
     /*
     *  inicializar dados
     */
+    //funcoes iniciais
+    carregarRecursos(); //carregar imagens, sons e fonts
+
     //filas
     filaUtilizadores fU;
     filaPerguntas fP;
