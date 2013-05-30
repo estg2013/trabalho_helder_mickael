@@ -8,12 +8,15 @@
 typedef struct
 {
     SDL_Surface *fundo;
+    SDL_Surface *fundo2;
     SDL_Surface *btNovoJogo;
     SDL_Surface *btOpcoes;
     SDL_Surface *btSair;
     SDL_Surface *btNovoJogob;
     SDL_Surface *btOpcoesb;
     SDL_Surface *btSairb;
+    SDL_Surface *setaCima;
+    SDL_Surface *setaBaixo;
     Mix_Music *musica_menu;
     TTF_Font *font;
 }botoesMenu;
@@ -25,12 +28,15 @@ void carregarRecursos()
 {
     //imagens do menu inicial
     btMenu.fundo = SDL_LoadBMP("img/splash.bmp");
+    btMenu.fundo2 = SDL_LoadBMP("img/fundo2.bmp");
     btMenu.btNovoJogo = SDL_LoadBMP("img/novojogo.bmp");
     btMenu.btOpcoes = SDL_LoadBMP("img/opcoes.bmp");
     btMenu.btSair = SDL_LoadBMP("img/sair.bmp");
     btMenu.btNovoJogob = SDL_LoadBMP("img/novojogob.bmp");
     btMenu.btOpcoesb = SDL_LoadBMP("img/opcoesb.bmp");
     btMenu.btSairb = SDL_LoadBMP("img/sairb.bmp");
+    btMenu.setaCima = SDL_LoadBMP("img/seta_cima.bmp");
+    btMenu.setaBaixo = SDL_LoadBMP("img/seta_baixo.bmp");
     //som
     btMenu.musica_menu = Mix_LoadMUS("music/botoes.wav");
     //font
@@ -146,6 +152,9 @@ void menu(SDL_Surface* ecra)
     }
 }
 
+/*
+* menu com as opcoes
+*/
 void menuOpcoes(SDL_Surface* ecra, SDL_Color cor1)
 {
 
@@ -201,9 +210,11 @@ void menuOpcoes(SDL_Surface* ecra, SDL_Color cor1)
 
             if(ratoX > 347 && ratoX < 623 && ratoY > 297 && ratoY < 330)
             {
+                //TODO: gestao de utilizadores
 
             }else if(ratoX > 366 && ratoX < 588 && ratoY > 367 && ratoY < 401)
             {
+                //TODO: gestao de perguntas
 
             }else if(ratoX > 386 && ratoX < 572 && ratoY > 587 && ratoY < 621)
             {
