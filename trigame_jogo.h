@@ -90,23 +90,28 @@ void menujogo(SDL_Surface* ecra)
 
         rect.x = 440;
         rect.y = 210;
-        SDL_BlitSurface(btgame.n2,NULL,ecra,&rect);
+        if(estadoBotao[1] == 0) SDL_BlitSurface(btgame.n2,NULL,ecra,&rect);
+        if(estadoBotao[1] == 1) SDL_BlitSurface(btgame.n2c,NULL,ecra,&rect);
 
         rect.x = 640;
         rect.y = 210;
-        SDL_BlitSurface(btgame.n3,NULL,ecra,&rect);
-
+        if(estadoBotao[2] == 0) SDL_BlitSurface(btgame.n3,NULL,ecra,&rect);
+        if(estadoBotao[2] == 1) SDL_BlitSurface(btgame.n3c,NULL,ecra,&rect);
         rect.x = 240;
+
         rect.y = 405;
-        SDL_BlitSurface(btgame.n4,NULL,ecra,&rect);
+        if(estadoBotao[3] == 0) SDL_BlitSurface(btgame.n4,NULL,ecra,&rect);
+        if(estadoBotao[3] == 1) SDL_BlitSurface(btgame.n4c,NULL,ecra,&rect);
 
         rect.x = 440;
         rect.y = 405;
-        SDL_BlitSurface(btgame.n5,NULL,ecra,&rect);
+        if(estadoBotao[4] == 0) SDL_BlitSurface(btgame.n5,NULL,ecra,&rect);
+        if(estadoBotao[4] == 1) SDL_BlitSurface(btgame.n5c,NULL,ecra,&rect);
 
         rect.x = 640;
         rect.y = 405;
-        SDL_BlitSurface(btgame.n6,NULL,ecra,&rect);
+        if(estadoBotao[5] == 0) SDL_BlitSurface(btgame.n6,NULL,ecra,&rect);
+        if(estadoBotao[5] == 1) SDL_BlitSurface(btgame.n6c,NULL,ecra,&rect);
 
         rect.x = 105;
         rect.y = 127;
@@ -135,8 +140,8 @@ void menujogo(SDL_Surface* ecra)
             ratoY = evento.motion.y;
             if(ratoX > 241 && ratoX < 385 && ratoY > 211 && ratoY < 344){
 
-                rect.x = 240;
-                rect.y = 210;
+               rect.x = 240;
+               rect.y = 210;
                SDL_BlitSurface(btgame.n1p,NULL,ecra,&rect);
                if(but1 == 0)
                     Mix_PlayMusic(btgame.musica_menu,1);
@@ -218,8 +223,13 @@ void menujogo(SDL_Surface* ecra)
             ratoX = evento.motion.x;
             ratoY = evento.motion.y;
             if(ratoX > 30 && ratoX < 245 && ratoY > 646 && ratoY < 680)
-
-            menu(ecra);
+            {
+               menu(ecra);
+            }else
+            if (ratoX > 17 && ratoX < 278 && ratoY > 15 && ratoY < 62)
+            {
+                menu(ecra);
+            }
 
         }
 
@@ -229,35 +239,90 @@ void menujogo(SDL_Surface* ecra)
                     ratoY = evento.motion.y;
                     if  (ratoX > 241 && ratoX < 385 && ratoY > 211 && ratoY < 344)
                     {
-                        rect.x = 640;
-                        rect.y = 405;
-                        SDL_BlitSurface(btgame.n6c,NULL,ecra,&rect);
-                        rect.x = 440;
-                        rect.y = 405;
-                        SDL_BlitSurface(btgame.n5c,NULL,ecra,&rect);
-                        rect.x = 240;
-                        rect.y = 405;
-                        SDL_BlitSurface(btgame.n4c,NULL,ecra,&rect);
-                        rect.x = 640;
-                        rect.y = 210;
-                        SDL_BlitSurface(btgame.n3c,NULL,ecra,&rect);
-                        rect.x = 440;
-                        rect.y = 210;
-                        SDL_BlitSurface(btgame.n2c,NULL,ecra,&rect);
                         if(estadoBotao[0] == 0)
                         {
                             estadoBotao[0] = 1;
+                            estadoBotao[1] = 0;
+                            estadoBotao[2] = 0;
+                            estadoBotao[3] = 0;
+                            estadoBotao[4] = 0;
+                            estadoBotao[5] = 0;
                         }else{
                             estadoBotao[0] = 0;
                         }
-
                     }
+                     if (ratoX > 441 && ratoX < 582 && ratoY > 211 && ratoY < 344)
+                    {
+                         if(estadoBotao[1] == 0)
+                        {
+                            estadoBotao[1] = 1;
+                            estadoBotao[0] = 0;
+                            estadoBotao[2] = 0;
+                            estadoBotao[3] = 0;
+                            estadoBotao[4] = 0;
+                            estadoBotao[5] = 0;
+                        }else{
+                            estadoBotao[1] = 0;
+                        }
+                    }
+                     if (ratoX > 641 && ratoX < 782 && ratoY > 211 && ratoY < 344)
+                    {
+                        if(estadoBotao[2] == 0)
+                        {
+                            estadoBotao[2] = 1;
+                            estadoBotao[1] = 0;
+                            estadoBotao[3] = 0;
+                            estadoBotao[4] = 0;
+                            estadoBotao[5] = 0;
+                        }else{
+                            estadoBotao[2] = 0;
+                        }
+                    }
+                     if (ratoX > 240 && ratoX < 382 && ratoY > 406 && ratoY < 540)
+                    {
+                        if(estadoBotao[3] == 0)
+                        {
+                            estadoBotao[3] = 1;
+                            estadoBotao[2] = 0;
+                            estadoBotao[1] = 0;
+                            estadoBotao[4] = 0;
+                            estadoBotao[5] = 0;
+                        }else{
+                            estadoBotao[3] = 0;
+                        }
+                    }
+
+                    if (ratoX > 441 && ratoX < 582 && ratoY > 406 && ratoY < 540)
+                    {
+                         if(estadoBotao[4] == 0)
+                        {
+                            estadoBotao[4] = 1;
+                            estadoBotao[2] = 0;
+                            estadoBotao[3] = 0;
+                            estadoBotao[1] = 0;
+                            estadoBotao[5] = 0;
+                        }else{
+                            estadoBotao[4] = 0;
+                        }
+                    }
+                    if (ratoX > 641 && ratoX < 782 && ratoY > 406 && ratoY < 540)
+                    {
+                        if(estadoBotao[5] == 0)
+                        {
+                            estadoBotao[5] = 1;
+                            estadoBotao[2] = 0;
+                            estadoBotao[3] = 0;
+                            estadoBotao[4] = 0;
+                            estadoBotao[1] = 0;
+                        }else{
+                            estadoBotao[5] = 0;
+                        }
+                    }
+
+
                 }
-
-
-
         SDL_Flip(ecra);
-        SDL_Delay(100);
+        SDL_Delay(50);
 
     }
 
