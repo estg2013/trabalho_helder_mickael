@@ -121,6 +121,7 @@ void menu(SDL_Surface* ecra)
             }
         }
 
+
         if(evento.type == SDL_MOUSEBUTTONDOWN)
         {
             ratoX = evento.motion.x;
@@ -236,16 +237,17 @@ void menuOpcoes(SDL_Surface* ecra, SDL_Color cor1)
 */
 void gestaoUtilizadores(SDL_Surface *ecra)
 {
-    filaUtilizadores fU; //estrutura para a fila de utilizadores
+    filaUtilizadores fU, fUinicial; //estrutura para a fila de utilizadores
 
     if(fU = lerUtilizadores("users.db")) //carregar o ficheiro de utilizadores para a fila
     {
-
+        fUinicial = lerUtilizadores("users.db");
     }else{
         exit(1); //sair se ocorrer algum erro
     }
 
     SDL_Rect rect = {0,0,100,100};
+    SDL_Rect nomes[10];
     SDL_Color cor = {0,0,0};
     SDL_Event evento;
     SDL_Surface *txtUtilizador = NULL;
@@ -258,7 +260,7 @@ void gestaoUtilizadores(SDL_Surface *ecra)
 
 
 
-    int ratoX, ratoY, i, posU = 0; //posU -> posicao de topo na lista de utilizadores para saber se mostra ou nao a seta superior
+    int ratoX, ratoY, i = 0, posU = 0, contadorU; //posU -> posicao de topo na lista de utilizadores para saber se mostra ou nao a seta superior
     char texto[100];
 
     while(1)
@@ -279,15 +281,24 @@ void gestaoUtilizadores(SDL_Surface *ecra)
         SDL_BlitSurface(btMenu.setaBaixo,NULL,ecra,&rect); //seta baixo
 
 
+
+        contadorU = 0;
+        i=0;
+        fU = fUinicial;
         //listar os utilizadores
-        /*for(i=0;i < 10; i++)
+        while(fU != NULL || i >= 10)
         {
-                rect.x = 30;
-                rect.y = (90)+(60*i);
-                txtUtilizador = TTF_RenderText_Solid(btMenu.font,fU->jogador.username,cor);
-                SDL_BlitSurface(txtUtilizador,NULL,ecra,&rect);
-                fU = fU->proximoJogador;
-        }*/
+                    if(contadorU >= posU && contadorU < (posU + 9) && i < 10)
+                    {
+                        nomes[i].x = 150;
+                        nomes[i].y = (130)+(60*i);
+                        txtUtilizador = TTF_RenderText_Solid(btMenu.font,fU->jogador.username,cor);
+                        SDL_BlitSurface(txtUtilizador,NULL,ecra,&nomes[i]);
+                        i++;
+                    }
+                    contadorU++; //incrementa a contagem de utilizadores
+                    fU = fU->proximoJogador;
+        }
 
 
 
@@ -304,7 +315,7 @@ void gestaoUtilizadores(SDL_Surface *ecra)
         {
             if(ratoX > 12 && ratoX < 287 && ratoY > 10 && ratoY < 66) menuOpcoes(ecra,cor); //voltar ao menu anterior
             if(ratoX > 770 && ratoX < 992 && ratoY > 532 && ratoY < 750) posU++;
-            if(ratoX > 770 && ratoX < 992 && ratoY > 94 && ratoY < 314) posU--;
+            if(ratoX > 770 && ratoX < 992 && ratoY > 94 && ratoY < 314 && posU > 0) posU--;
         }
 
 
@@ -317,6 +328,6 @@ void gestaoUtilizadores(SDL_Surface *ecra)
 
         //actualizar ecra e esperar 50ms
         SDL_Flip(ecra);
-        SDL_Delay(50);
+        SDL_Delay(80);
     }
 }
