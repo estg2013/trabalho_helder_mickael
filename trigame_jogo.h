@@ -19,6 +19,12 @@ typedef struct
     SDL_Surface *n4p;
     SDL_Surface *n5p;
     SDL_Surface *n6p;
+    SDL_Surface *n1c;
+    SDL_Surface *n2c;
+    SDL_Surface *n3c;
+    SDL_Surface *n4c;
+    SDL_Surface *n5c;
+    SDL_Surface *n6c;
     SDL_Surface *btOpcoesb;
     SDL_Surface *fundo2;
     Mix_Music *musica_menu;
@@ -41,6 +47,12 @@ void recursosjogo()
  btgame.n4p = SDL_LoadBMP("img/n4p.bmp");
  btgame.n5p = SDL_LoadBMP("img/n5p.bmp");
  btgame.n6p = SDL_LoadBMP("img/n6p.bmp");
+ btgame.n1c = SDL_LoadBMP("img/n1c.bmp");
+ btgame.n2c = SDL_LoadBMP("img/n2c.bmp");
+ btgame.n3c = SDL_LoadBMP("img/n3c.bmp");
+ btgame.n4c = SDL_LoadBMP("img/n4c.bmp");
+ btgame.n5c = SDL_LoadBMP("img/n5c.bmp");
+ btgame.n6c = SDL_LoadBMP("img/n6c.bmp");
  btgame.fundo2 = SDL_LoadBMP("img/fundo2.bmp");
  btgame.musica_menu = Mix_LoadMUS("music/botoes.wav");
  btgame.font = TTF_OpenFont("font/font1.ttf",28);
@@ -208,6 +220,33 @@ void menujogo(SDL_Surface* ecra)
             menu(ecra);
 
         }
+
+                  if(evento.type == SDL_MOUSEBUTTONDOWN)
+                {
+                    ratoX = evento.motion.x;
+                    ratoY = evento.motion.y;
+                    if  (ratoX > 241 && ratoX < 385 && ratoY > 211 && ratoY < 344)
+                    {
+                        rect.x = 640;
+                        rect.y = 405;
+                        SDL_BlitSurface(btgame.n6c,NULL,ecra,&rect);
+                        rect.x = 440;
+                        rect.y = 405;
+                        SDL_BlitSurface(btgame.n5c,NULL,ecra,&rect);
+                        rect.x = 240;
+                        rect.y = 405;
+                        SDL_BlitSurface(btgame.n4c,NULL,ecra,&rect);
+                        rect.x = 640;
+                        rect.y = 210;
+                        SDL_BlitSurface(btgame.n3c,NULL,ecra,&rect);
+                        rect.x = 440;
+                        rect.y = 210;
+                        SDL_BlitSurface(btgame.n2c,NULL,ecra,&rect);
+
+                    }
+                }
+
+
 
         SDL_Flip(ecra);
         SDL_Delay(50);
