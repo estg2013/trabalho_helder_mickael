@@ -63,6 +63,7 @@ void menujogo(SDL_Surface* ecra)
 {
     char texto[100];
     int ratoX, ratoY,but1 = 0, but2 = 0, but3 = 0,but4= 0, but5 = 0, but6 = 0, but7 = 0;
+    int estadoBotao[6] = {0,0,0,0,0,0};
 
     SDL_Event evento;
     SDL_Rect rect = {0,0,100,100};
@@ -84,7 +85,8 @@ void menujogo(SDL_Surface* ecra)
         //botao n1
         rect.x = 240;
         rect.y = 210;
-        SDL_BlitSurface(btgame.n1,NULL,ecra,&rect);
+        if(estadoBotao[0] == 0) SDL_BlitSurface(btgame.n1,NULL,ecra,&rect);
+        if(estadoBotao[0] == 1) SDL_BlitSurface(btgame.n1c,NULL,ecra,&rect);
 
         rect.x = 440;
         rect.y = 210;
@@ -242,6 +244,12 @@ void menujogo(SDL_Surface* ecra)
                         rect.x = 440;
                         rect.y = 210;
                         SDL_BlitSurface(btgame.n2c,NULL,ecra,&rect);
+                        if(estadoBotao[0] == 0)
+                        {
+                            estadoBotao[0] = 1;
+                        }else{
+                            estadoBotao[0] = 0;
+                        }
 
                     }
                 }
@@ -249,7 +257,7 @@ void menujogo(SDL_Surface* ecra)
 
 
         SDL_Flip(ecra);
-        SDL_Delay(50);
+        SDL_Delay(100);
 
     }
 
