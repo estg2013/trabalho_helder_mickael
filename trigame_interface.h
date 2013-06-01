@@ -40,8 +40,9 @@ void carregarRecursos()
     //som
     btMenu.musica_menu = Mix_LoadMUS("music/botoes.wav");
     //font
-    btMenu.font = TTF_OpenFont("font/font1.ttf",28);
+    btMenu.font = TTF_OpenFont("font/font1.ttf",33);
 }
+
 
 
 /*
@@ -163,15 +164,14 @@ void menuOpcoes(SDL_Surface* ecra, SDL_Color cor1)
     //estruturas
     char texto[100];
     int ratoX, ratoY;
-    TTF_Font *font = NULL;
-    font = TTF_OpenFont("font/font1.ttf",28);
+
     SDL_Event evento;
     SDL_Rect rect = {0,0,100,100};
     SDL_Surface *butUtilizadores, *butPerguntas, *butVoltar;
 
-    butUtilizadores = TTF_RenderText_Solid(font,"Utilizadores",cor1);
-    butPerguntas = TTF_RenderText_Solid(font,"Perguntas",cor1);
-    butVoltar = TTF_RenderText_Solid(font,"< Voltar",cor1);
+    butUtilizadores = TTF_RenderText_Solid(btMenu.font,"Utilizadores",cor1);
+    butPerguntas = TTF_RenderText_Solid(btMenu.font,"Perguntas",cor1);
+    butVoltar = TTF_RenderText_Solid(btMenu.font,"< Voltar",cor1);
 
 
     rect.x = 350;
@@ -196,21 +196,16 @@ void menuOpcoes(SDL_Surface* ecra, SDL_Color cor1)
         {
             ratoX = evento.motion.x;
             ratoY = evento.motion.y;
-            sprintf(texto,"X:%i Y:%i",ratoX,ratoY);
-            SDL_WM_SetCaption(texto,NULL); //altera o titulo da janela
         }
 
         //clique do rato
         if(evento.type == SDL_MOUSEBUTTONDOWN)
         {
-            ratoX = evento.motion.x;
-            ratoY = evento.motion.y;
-            sprintf(texto,"X:%i Y:%i",ratoX,ratoY);
-            SDL_WM_SetCaption(texto,NULL);
 
             if(ratoX > 347 && ratoX < 623 && ratoY > 297 && ratoY < 330)
             {
                 //TODO: gestao de utilizadores
+                gestaoUtilizadores(ecra);
 
             }else if(ratoX > 366 && ratoX < 588 && ratoY > 367 && ratoY < 401)
             {
@@ -231,6 +226,96 @@ void menuOpcoes(SDL_Surface* ecra, SDL_Color cor1)
         }
 
         //actualizar o ecra
+        SDL_Flip(ecra);
+        SDL_Delay(50);
+    }
+}
+
+/*
+* menu de gestao dos utilizadores
+*/
+void gestaoUtilizadores(SDL_Surface *ecra)
+{
+    filaUtilizadores fU; //estrutura para a fila de utilizadores
+
+    if(fU = lerUtilizadores("users.db")) //carregar o ficheiro de utilizadores para a fila
+    {
+
+    }else{
+        exit(1); //sair se ocorrer algum erro
+    }
+
+    SDL_Rect rect = {0,0,100,100};
+    SDL_Color cor = {0,0,0};
+    SDL_Event evento;
+    SDL_Surface *txtUtilizador = NULL;
+
+    SDL_BlitSurface(btMenu.fundo2,NULL,ecra,NULL); //fundo
+    rect.y = 30;
+    rect.x = 500;
+    txtUtilizador = TTF_RenderText_Solid(btMenu.font,"UTILIZADORES",cor);
+    SDL_BlitSurface(txtUtilizador,NULL,ecra,&rect);
+
+
+
+    int ratoX, ratoY, i, posU = 0; //posU -> posicao de topo na lista de utilizadores para saber se mostra ou nao a seta superior
+    char texto[100];
+
+    while(1)
+    {
+        SDL_PollEvent(&evento); //capturar evento
+
+        SDL_BlitSurface(btMenu.fundo2,NULL,ecra,NULL); //fundo
+        rect.y = 30;
+        rect.x = 500;
+        txtUtilizador = TTF_RenderText_Solid(btMenu.font,"UTILIZADORES",cor);
+        SDL_BlitSurface(txtUtilizador,NULL,ecra,&rect);
+
+        rect.x = 770;
+        rect.y = 90;
+        if(posU > 0) SDL_BlitSurface(btMenu.setaCima,NULL,ecra,&rect); //seta cima
+
+        rect.y = 530;
+        SDL_BlitSurface(btMenu.setaBaixo,NULL,ecra,&rect); //seta baixo
+
+
+        //listar os utilizadores
+        /*for(i=0;i < 10; i++)
+        {
+                rect.x = 30;
+                rect.y = (90)+(60*i);
+                txtUtilizador = TTF_RenderText_Solid(btMenu.font,fU->jogador.username,cor);
+                SDL_BlitSurface(txtUtilizador,NULL,ecra,&rect);
+                fU = fU->proximoJogador;
+        }*/
+
+
+
+        if(evento.type == SDL_MOUSEMOTION)
+        {
+            ratoX = evento.motion.x;
+            ratoY = evento.motion.y;
+            sprintf(texto,"X:%i Y:%i",ratoX,ratoY);
+            SDL_WM_SetCaption(texto,NULL);
+        }
+
+
+        if(evento.type == SDL_MOUSEBUTTONDOWN)
+        {
+            if(ratoX > 12 && ratoX < 287 && ratoY > 10 && ratoY < 66) menuOpcoes(ecra,cor); //voltar ao menu anterior
+            if(ratoX > 770 && ratoX < 992 && ratoY > 532 && ratoY < 750) posU++;
+            if(ratoX > 770 && ratoX < 992 && ratoY > 94 && ratoY < 314) posU--;
+        }
+
+
+        if(evento.type == SDL_KEYDOWN)
+        {
+            //ESC -> voltar para menu anterior
+            if(evento.key.keysym.sym == SDLK_ESCAPE)
+                 menuOpcoes(ecra,cor);
+        }
+
+        //actualizar ecra e esperar 50ms
         SDL_Flip(ecra);
         SDL_Delay(50);
     }
