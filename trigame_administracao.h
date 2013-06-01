@@ -121,7 +121,7 @@ filaUtilizadores lerUtilizadores(char ficheiro[])
     {
         fclose(fp); //TODO: verificar se e necessario fechar o ficheiro
         fp = fopen(ficheiro,"w");
-        for(i=0;i<100;i++)
+        for(i=0;i<5;i++)
         {
             if(i>0) fprintf(fp,"\n");
             fprintf(fp,"utilizador-%i,admin,%i,%i,%i",rand(),(rand()%2),rand(),rand()); //cria o admin se nao existir
@@ -305,3 +305,4 @@ pergunta criarPergunta(int categoria, char npergunta[], char respostaCerta[], ch
 
     return novaPergunta;
 }
+

@@ -1,5 +1,6 @@
 #ifndef TRIGAME_INTERFACE_H_INCLUDED
 #define TRIGAME_INTERFACE_H_INCLUDED
+#define BRANCH "TRIGAME ALPHA - BRANCH: helder_interface"
 
 
 
@@ -17,6 +18,8 @@ typedef struct
     SDL_Surface *btSairb;
     SDL_Surface *setaCima;
     SDL_Surface *setaBaixo;
+    SDL_Surface *btMais;
+    SDL_Surface *frmNovoUtilizador;
     Mix_Music *musica_menu;
     TTF_Font *font;
 }botoesMenu;
@@ -37,6 +40,8 @@ void carregarRecursos()
     btMenu.btSairb = SDL_LoadBMP("img/sairb.bmp");
     btMenu.setaCima = SDL_LoadBMP("img/seta_cima.bmp");
     btMenu.setaBaixo = SDL_LoadBMP("img/seta_baixo.bmp");
+    btMenu.btMais = SDL_LoadBMP("img/mais.bmp");
+    btMenu.frmNovoUtilizador = SDL_LoadBMP("img/frmNovoUtilizador.bmp");
     //som
     btMenu.musica_menu = Mix_LoadMUS("music/botoes.wav");
     //font
@@ -202,7 +207,6 @@ void menuOpcoes(SDL_Surface* ecra, SDL_Color cor1)
         //clique do rato
         if(evento.type == SDL_MOUSEBUTTONDOWN)
         {
-
             if(ratoX > 347 && ratoX < 623 && ratoY > 297 && ratoY < 330)
             {
                 //TODO: gestao de utilizadores
@@ -235,6 +239,92 @@ void menuOpcoes(SDL_Surface* ecra, SDL_Color cor1)
 /*
 * menu de gestao dos utilizadores
 */
+//inserir novo jogador
+void inserirJogador(SDL_Surface *ecra)
+{
+    SDL_Event evento;
+    SDL_Surface *texto = NULL;
+    SDL_Color cor = {0,0,0};
+    SDL_Rect rect = {0,0,100,100};
+    rect.x = 200;
+    rect.y = 200;
+    int inserirUsername = 1, ratoX, ratoY, tamtexto = 0,i;
+    char txt[100],inp[100], inp_temp[100];
+    char unic;
+
+    sprintf(inp,"");
+
+    SDL_BlitSurface(btMenu.frmNovoUtilizador,NULL,ecra,&rect);
+
+    rect.x = 364;
+    rect.y = 234;
+
+    while(1)
+    {
+        SDL_PollEvent(&evento);
+
+        //teclado
+        if(evento.type == SDL_KEYDOWN)
+        {
+            switch(evento.key.keysym.sym)
+            {
+            //enter
+            case SDLK_RETURN:
+                if(inserirUsername == 1)
+                {
+                    strcpy(inp_temp,inp);
+                    sprintf(inp,"");
+                    rect.y = 335;
+                    inserirUsername = 0;
+                }
+                break;
+            //escape
+            case SDLK_ESCAPE:
+                return;
+                break;
+            //letras
+            default:
+                unic = (char)evento.key.keysym.sym;
+                sprintf(inp,"%s%c",inp,unic);
+            }
+
+            texto = TTF_RenderText_Solid(btMenu.font,inp,cor);
+            SDL_BlitSurface(texto,NULL,ecra,&rect);
+        }
+
+        //movimento do rato
+        if(evento.type == SDL_MOUSEMOTION)
+        {
+            ratoX = evento.motion.x;
+            ratoY = evento.motion.y;
+            sprintf(txt,"%s X:%i Y:%i",BRANCH,ratoX,ratoY);
+            SDL_WM_SetCaption(txt,NULL);
+        }
+
+        //clique do rato
+        if(evento.type == SDL_MOUSEBUTTONDOWN)
+        {
+            if(ratoX > 317 && ratoX < 585 && ratoY > 407 && ratoY < 477)
+            {
+                FILE *fp;
+                fp = fopen("users.db","a+");
+                fprintf(fp,"\n%s,%s,%i,%i,%i",inp_temp,inp,0,0,0);
+                fclose(fp);
+                gestaoUtilizadores(ecra);
+            }
+        }
+        SDL_Delay(80);
+        SDL_Flip(ecra);
+    }
+}
+
+
+
+
+
+
+
+//menu com a lista de utilizadores carregados a partir do ficheiro
 void gestaoUtilizadores(SDL_Surface *ecra)
 {
     filaUtilizadores fU, fUinicial; //estrutura para a fila de utilizadores
@@ -280,19 +370,25 @@ void gestaoUtilizadores(SDL_Surface *ecra)
         rect.y = 530;
         SDL_BlitSurface(btMenu.setaBaixo,NULL,ecra,&rect); //seta baixo
 
+        rect.y = 350;
+        rect.x = 820;
+        SDL_BlitSurface(btMenu.btMais,NULL,ecra,&rect);//mais
+
 
 
         contadorU = 0;
         i=0;
         fU = fUinicial;
         //listar os utilizadores
+        //TODO: resolver overflow da memoria por estar sempre a carregar o texto em cada ciclo para a RAM
         while(fU != NULL || i >= 10)
         {
                     if(contadorU >= posU && contadorU < (posU + 9) && i < 10)
                     {
-                        nomes[i].x = 150;
+                        nomes[i].x = 120;
                         nomes[i].y = (130)+(60*i);
-                        txtUtilizador = TTF_RenderText_Solid(btMenu.font,fU->jogador.username,cor);
+                        sprintf(texto,"Nome: %s, Nivel %i",fU->jogador.username,fU->jogador.respostas_certas);
+                        txtUtilizador = TTF_RenderText_Solid(btMenu.font,texto,cor);
                         SDL_BlitSurface(txtUtilizador,NULL,ecra,&nomes[i]);
                         i++;
                     }
@@ -306,7 +402,7 @@ void gestaoUtilizadores(SDL_Surface *ecra)
         {
             ratoX = evento.motion.x;
             ratoY = evento.motion.y;
-            sprintf(texto,"X:%i Y:%i",ratoX,ratoY);
+            sprintf(texto,"%s X:%i Y:%i",BRANCH,ratoX,ratoY);
             SDL_WM_SetCaption(texto,NULL);
         }
 
@@ -314,10 +410,10 @@ void gestaoUtilizadores(SDL_Surface *ecra)
         if(evento.type == SDL_MOUSEBUTTONDOWN)
         {
             if(ratoX > 12 && ratoX < 287 && ratoY > 10 && ratoY < 66) menuOpcoes(ecra,cor); //voltar ao menu anterior
-            if(ratoX > 770 && ratoX < 992 && ratoY > 532 && ratoY < 750) posU++;
+            if(ratoX > 770 && ratoX < 992 && ratoY > 532 && ratoY < 750 && posU < (contadorU-1)) posU++;
             if(ratoX > 770 && ratoX < 992 && ratoY > 94 && ratoY < 314 && posU > 0) posU--;
+            if(ratoX > 836 && ratoX < 930 && ratoY > 362 && ratoY < 461) inserirJogador(ecra);
         }
-
 
         if(evento.type == SDL_KEYDOWN)
         {
