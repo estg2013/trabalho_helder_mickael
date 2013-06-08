@@ -219,11 +219,11 @@ utilizador alterarUtilizador(utilizador utilizadorAalterar)
 
 
 //apagar utilizador
-void apagarUtilizadores(filaUtilizadores fU, char nUtilizador[])
+void modificarUtilizadores(filaUtilizadores fU, char nUtilizador[], int operacao)
 {
     FILE *fp;
     char linha[300];
-    int contadorU = 0;
+    int contadorU = 0, admin;
 
     fp = fopen("users.db","w"); //ficheiro de utilizadores para escrita
 
@@ -234,6 +234,24 @@ void apagarUtilizadores(filaUtilizadores fU, char nUtilizador[])
         if(strcmp(fU->jogador.username,nUtilizador) == 0)
         {
             //TODO: backup jogador apagado
+            switch(operacao)
+            {
+            case 1:
+                    //apaga o jogador
+                break;
+            case 2:
+                    //alterar para admin
+                    if(contadorU > 0) fprintf(fp,"\n");
+                    if(fU->jogador.admin == 0)
+                    {
+                        admin = 1;
+                    }else{
+                        admin = 0;
+                    }
+                    fprintf(fp,"%s,%s,%i,%i,%i",fU->jogador.username,fU->jogador.password,admin,fU->jogador.respostas_certas,fU->jogador.respostas_erradas);
+                    contadorU++;
+                break;
+            }
         }else{
             //guarda o jogador novamente no ficheiro
             if(contadorU > 0) fprintf(fp,"\n");
