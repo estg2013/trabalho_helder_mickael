@@ -423,6 +423,20 @@ void gestaoUtilizadores(SDL_Surface *ecra)
                 if(ratoX > 770 && ratoX < 992 && ratoY > 94 && ratoY < 314 && posU > 0) posU--; //seta para cima
                 if(ratoX > 836 && ratoX < 930 && ratoY > 362 && ratoY < 461) inserirJogador(ecra); //criar novo jogador
                 //sprintf(texto,"Botao esquerdo clicado");
+                if(ratoX > 120 && ratoX < 720) //limites horizontais para o clique do rato
+                    {
+                        for(j=0;j<9;j++)
+                        {
+                            //verifica qual o utilizador clicado
+                            if(ratoY > nomes[j].y && ratoY < (nomes[j].y + 40))
+                            {
+                                //apaga o utilizador clicado
+                                modificarUtilizadores(fUinicial,nUtilizadores[j],2); //apaga o utilizador
+                                fUinicial = lerUtilizadores("users.db"); //reinicia as filas
+                                posU = 0; //coloca a lista no inicio
+                            }
+                        }
+                    }
                 break;
             case SDL_BUTTON_RIGHT: //botao direito do rato
                     if(ratoX > 120 && ratoX < 720) //limites horizontais para o clique do rato
@@ -443,21 +457,7 @@ void gestaoUtilizadores(SDL_Surface *ecra)
                 //sprintf(texto,"Botao direito clicado");
                 break;
             case SDL_BUTTON_MIDDLE: //botao do meio do rato -> definir o utilizador como admin
-                //sprintf(texto,"Botao central clicado");
-                if(ratoX > 120 && ratoX < 720) //limites horizontais para o clique do rato
-                    {
-                        for(j=0;j<9;j++)
-                        {
-                            //verifica qual o utilizador clicado
-                            if(ratoY > nomes[j].y && ratoY < (nomes[j].y + 40))
-                            {
-                                //apaga o utilizador clicado
-                                modificarUtilizadores(fUinicial,nUtilizadores[j],2); //apaga o utilizador
-                                fUinicial = lerUtilizadores("users.db"); //reinicia as filas
-                                posU = 0; //coloca a lista no inicio
-                            }
-                        }
-                    }
+
                 break;
             case SDL_BUTTON_WHEELDOWN: //roda para baixo
                 if(posU < (contadorU - 1))  posU++;
