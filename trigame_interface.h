@@ -322,8 +322,6 @@ void inserirJogador(SDL_Surface *ecra)
 
 
 
-
-
 //menu com a lista de utilizadores carregados a partir do ficheiro
 void gestaoUtilizadores(SDL_Surface *ecra)
 {
@@ -338,7 +336,8 @@ void gestaoUtilizadores(SDL_Surface *ecra)
 
     SDL_Rect rect = {0,0,100,100};
     SDL_Rect nomes[10];
-    SDL_Color cor = {0,0,0};
+    SDL_Color cor = {0,0,0}; //cor para os utilizadores normais
+    SDL_Color corAdmin = {0,255,50}; //cor para os admins
     SDL_Event evento;
     SDL_Surface *txtUtilizador = NULL;
 
@@ -350,8 +349,8 @@ void gestaoUtilizadores(SDL_Surface *ecra)
 
 
 
-    int ratoX, ratoY, i = 0, posU = 0, contadorU; //posU -> posicao de topo na lista de utilizadores para saber se mostra ou nao a seta superior
-    char texto[100];
+    int ratoX, ratoY, i = 0, posU = 0, contadorU, j; //posU -> posicao de topo na lista de utilizadores para saber se mostra ou nao a seta superior
+    char texto[100], nUtilizadores[10][100];
 
     while(1)
     {
@@ -387,8 +386,14 @@ void gestaoUtilizadores(SDL_Surface *ecra)
                     {
                         nomes[i].x = 120;
                         nomes[i].y = (130)+(60*i);
-                        sprintf(texto,"Nome: %s, Nivel %i",fU->jogador.username,fU->jogador.respostas_certas);
-                        txtUtilizador = TTF_RenderText_Solid(btMenu.font,texto,cor);
+                        strcpy(nUtilizadores[i],fU->jogador.username);
+                        sprintf(texto,"%i - %s -> Nivel %i",(i + posU),nUtilizadores[i],fU->jogador.respostas_certas);
+                        if(fU->jogador.admin == 1)
+                        {
+                            txtUtilizador = TTF_RenderText_Solid(btMenu.font,texto,corAdmin);
+                        }else{
+                            txtUtilizador = TTF_RenderText_Solid(btMenu.font,texto,cor);
+                        }
                         SDL_BlitSurface(txtUtilizador,NULL,ecra,&nomes[i]);
                         i++;
                     }
@@ -397,23 +402,59 @@ void gestaoUtilizadores(SDL_Surface *ecra)
         }
 
 
-
+        //mostrar posicao do rato
         if(evento.type == SDL_MOUSEMOTION)
         {
             ratoX = evento.motion.x;
             ratoY = evento.motion.y;
             sprintf(texto,"%s X:%i Y:%i",BRANCH,ratoX,ratoY);
-            SDL_WM_SetCaption(texto,NULL);
         }
 
 
+        //posicoes dos botoes ao clicar
         if(evento.type == SDL_MOUSEBUTTONDOWN)
         {
-            if(ratoX > 12 && ratoX < 287 && ratoY > 10 && ratoY < 66) menuOpcoes(ecra,cor); //voltar ao menu anterior
-            if(ratoX > 770 && ratoX < 992 && ratoY > 532 && ratoY < 750 && posU < (contadorU-1)) posU++;
-            if(ratoX > 770 && ratoX < 992 && ratoY > 94 && ratoY < 314 && posU > 0) posU--;
-            if(ratoX > 836 && ratoX < 930 && ratoY > 362 && ratoY < 461) inserirJogador(ecra);
+            //verificar botao clicado
+            switch(evento.button.button)
+            {
+            case SDL_BUTTON_LEFT: //botao esquerdo do rato
+                if(ratoX > 12 && ratoX < 287 && ratoY > 10 && ratoY < 66) menuOpcoes(ecra,cor); //voltar ao menu anterior
+                if(ratoX > 770 && ratoX < 992 && ratoY > 532 && ratoY < 750 && posU < (contadorU-1)) posU++; //seta para baixo
+                if(ratoX > 770 && ratoX < 992 && ratoY > 94 && ratoY < 314 && posU > 0) posU--; //seta para cima
+                if(ratoX > 836 && ratoX < 930 && ratoY > 362 && ratoY < 461) inserirJogador(ecra); //criar novo jogador
+                //sprintf(texto,"Botao esquerdo clicado");
+                break;
+            case SDL_BUTTON_RIGHT: //botao direito do rato
+                    if(ratoX > 120 && ratoX < 720) //limites horizontais para o clique do rato
+                    {
+                        for(j=0;j<9;j++)
+                        {
+                            //verifica qual o utilizador clicado
+                            if(ratoY > nomes[j].y && ratoY < (nomes[j].y + 40))
+                            {
+                                //apaga o utilizador clicado
+                                apagarUtilizadores(fUinicial,nUtilizadores[j]); //apaga o utilizador
+                                fUinicial = lerUtilizadores("users.db"); //reinicia as filas
+                                posU = 0; //coloca a lista no inicio
+                            }
+                        }
+                    }
+                //sprintf(texto,"Botao direito clicado");
+                break;
+            case SDL_BUTTON_MIDDLE: //botao do meio do rato
+                //sprintf(texto,"Botao central clicado");
+                break;
+            case SDL_BUTTON_WHEELDOWN: //roda para baixo
+                if(posU < (contadorU - 1))  posU++;
+                break;
+            case SDL_BUTTON_WHEELUP: //roda para cima
+                if(posU > 0) posU--;
+                break;
+            }
         }
+
+        //DEBUG -> altera o titulo da janela
+        //SDL_WM_SetCaption(texto,NULL);
 
         if(evento.type == SDL_KEYDOWN)
         {

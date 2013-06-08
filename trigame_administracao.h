@@ -104,15 +104,47 @@ utilizador parseUtilizador(char utili[], char separador)
     return u;
 }
 
+//inicializar ficheiro com os utilizadores
+void inicializarUtilizadores(char ficheiro[])
+{
+    int i;
+    FILE *fp;
+
+    fp = fopen(ficheiro,"w");
+        for(i=0;i<50;i++)
+        {
+            if(i>0) fprintf(fp,"\n");
+            fprintf(fp,"utilizador-%i,admin,%i,%i,%i",rand(),(rand()%2),rand(),rand()); //cria o admin se nao existir
+        }
+    fclose(fp);
+}
+
+/*
+*
+*                      _..-'(                       )`-.._
+                   ./'. '||\\.       (\_/)       .//||` .`\.
+                ./'.|'.'||||\\|..    )O O(    ..|//||||`.`|.`\.
+             ./'..|'.|| |||||\`````` '`"'` ''''''/||||| ||.`|..`\.
+           ./'.||'.|||| ||||||||||||.     .|||||||||||| |||||.`||.`\.
+          /'|||'.|||||| ||||||||||||{     }|||||||||||| ||||||.`|||`\
+         '.|||'.||||||| ||||||||||||{     }|||||||||||| |||||||.`|||.`
+        '.||| ||||||||| |/'   ``\||``     ''||/''   `\| ||||||||| |||.`
+        |/' \./'     `\./         \!|\   /|!/         \./'     `\./ `\|
+        V    V         V          }' `\ /' `{          V         V    V
+        `    `         `               V               '         '    '
+
+*/
+
 //ler os utilizadores para a fila de utilizadores
 filaUtilizadores lerUtilizadores(char ficheiro[])
 {
     char linha[200];
     int i = 0;
-    filaUtilizadores l,c;
+    filaUtilizadores l,c, cInvertida, cL;
     utilizador fUtilizador; //utilizador para ler a linha do ficheiro
 
     l = NULL;
+    cL = NULL;
 
     FILE *fp; //apontador para o ficheiro
     fp = fopen(ficheiro,"r"); //abrir o ficheiro em de leitura texto
@@ -120,14 +152,8 @@ filaUtilizadores lerUtilizadores(char ficheiro[])
     if(!fp) //se o ficheiro de utilizadores existir
     {
         fclose(fp); //TODO: verificar se e necessario fechar o ficheiro
-        fp = fopen(ficheiro,"w");
-        for(i=0;i<5;i++)
-        {
-            if(i>0) fprintf(fp,"\n");
-            fprintf(fp,"utilizador-%i,admin,%i,%i,%i",rand(),(rand()%2),rand(),rand()); //cria o admin se nao existir
-        }
+        inicializarUtilizadores(ficheiro);
     }
-    fclose(fp);
 
     fp = fopen(ficheiro,"r"); //abrir o ficheiro em de leitura texto
 
@@ -146,7 +172,18 @@ filaUtilizadores lerUtilizadores(char ficheiro[])
 
     fclose(fp);
 
-    return c;
+
+    //FIX: inverter o que é lido do ficheiro
+    while(c != NULL)
+    {
+        cInvertida = malloc(sizeof(listaUtilizadores));
+        cInvertida->jogador = c->jogador;
+        cInvertida->proximoJogador = cL;
+        cL = cInvertida;
+        c = c->proximoJogador;
+    }
+
+    return cInvertida;
 }
 
 //criar novo utilizador
@@ -179,6 +216,41 @@ utilizador alterarUtilizador(utilizador utilizadorAalterar)
 
     return utilizadorAlterado;
 }
+
+
+//apagar utilizador
+void apagarUtilizadores(filaUtilizadores fU, char nUtilizador[])
+{
+    FILE *fp;
+    char linha[300];
+    int contadorU = 0;
+
+    fp = fopen("users.db","w"); //ficheiro de utilizadores para escrita
+
+    //gravar os utilizadores excepto o utilizador a apagar
+    while(fU != NULL)
+    {
+        //verifica se e o jogador a apagar
+        if(strcmp(fU->jogador.username,nUtilizador) == 0)
+        {
+            //TODO: backup jogador apagado
+        }else{
+            //guarda o jogador novamente no ficheiro
+            if(contadorU > 0) fprintf(fp,"\n");
+            fprintf(fp,"%s,%s,%i,%i,%i",fU->jogador.username,fU->jogador.password,fU->jogador.admin,fU->jogador.respostas_certas,fU->jogador.respostas_erradas);
+            contadorU++;
+        }
+        fU = fU->proximoJogador;
+    }
+    fclose(fp);
+}
+
+
+
+
+
+
+
 
 /********************************* PERGUNTAS *******************************/
 //struct fila perguntas
