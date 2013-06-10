@@ -767,7 +767,6 @@ void inserirPergunta(SDL_Surface *ecra)
         }
 
 
-
         //actualizar ecra
         SDL_Flip(ecra);
         SDL_Delay(80);
