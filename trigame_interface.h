@@ -20,6 +20,8 @@ typedef struct
     SDL_Surface *setaBaixo;
     SDL_Surface *btMais;
     SDL_Surface *frmNovoUtilizador;
+    SDL_Surface *btCategoriaHistoria, *btCategoriaBiologiaGeografia, *btCategoriaArtes, *btCategoriaTrivialidades;
+    SDL_Surface *pontoVerde;
     Mix_Music *musica_menu;
     TTF_Font *font;
 }botoesMenu;
@@ -48,6 +50,11 @@ void carregarRecursos()
     btMenu.setaBaixo = SDL_LoadBMP("img/seta_baixo.bmp");
     btMenu.btMais = SDL_LoadBMP("img/mais.bmp");
     btMenu.frmNovoUtilizador = SDL_LoadBMP("img/frmNovoUtilizador.bmp");
+    btMenu.btCategoriaArtes = SDL_LoadBMP("img/btArte.bmp");
+    btMenu.btCategoriaBiologiaGeografia = SDL_LoadBMP("img/btBiologia.bmp");
+    btMenu.btCategoriaHistoria = SDL_LoadBMP("img/btHistoria.bmp");
+    btMenu.btCategoriaTrivialidades = SDL_LoadBMP("img/btDiversos.bmp");
+    btMenu.pontoVerde = SDL_LoadBMP("img/pontoVerde.bmp");
     //som
     btMenu.musica_menu = Mix_LoadMUS("music/botoes.wav");
     //font
@@ -144,8 +151,10 @@ void menu(SDL_Surface* ecra)
 
             //clique para as opcoes
             if(ratoX > 351 && ratoX < 661 && ratoY > 374 && ratoY < 444)
-                menuOpcoes(ecra,cor1);
-
+                if(login(ecra) == 1)
+                {
+                    menuOpcoes(ecra,cor1);
+                }
             //clique para sair
             if(ratoX > 351 && ratoX < 661 && ratoY > 444 && ratoY < 515)
                 exit(1);
@@ -245,6 +254,80 @@ void menuOpcoes(SDL_Surface* ecra, SDL_Color cor1)
         SDL_Flip(ecra);
         SDL_Delay(50);
     }
+}
+
+
+/*
+* ecra de login para a administracao
+*
+*/
+int login(SDL_Surface *ecra)
+{
+    int loginOK = 0, estado = 0;
+    char nome[100], senha[100], unic, texto[100];
+    sprintf(nome,"\0");
+    sprintf(senha,"\0");
+    SDL_Rect rect;
+    SDL_Event evento;
+    SDL_Surface *username, *password;
+    SDL_Color cor = {0,0,0};
+    filaUtilizadores fU;
+
+    rect.x = 200; rect.y = 200;
+
+    SDL_BlitSurface(btMenu.frmNovoUtilizador,NULL,ecra,&rect);
+
+    while(estado != 2)
+    {
+        SDL_PollEvent(&evento);
+
+        switch(evento.type)
+        {
+        case SDL_KEYDOWN:
+            if(evento.key.keysym.sym == SDLK_RETURN)
+            {
+                estado ++;
+            }else if(evento.key.keysym.sym == SDLK_ESCAPE)
+            {
+               estado = 2;
+            }else if(estado == 0) //ler o username
+            {
+                unic = (char)evento.key.keysym.sym;
+                sprintf(nome,"%s%c",nome,unic);
+                username = TTF_RenderText_Solid(btMenu.font,nome,cor);
+                rect.x = 364;
+                rect.y = 234;
+                SDL_BlitSurface(username,NULL,ecra,&rect);
+            }else if(estado == 1) //ler a senha
+            {
+                //obter o unicode pressionado no teclado
+                unic = (char)evento.key.keysym.sym;
+                sprintf(senha,"%s%c",senha,unic);
+                password = TTF_RenderText_Solid(btMenu.font,senha,cor);
+                rect.x = 364;
+                rect.y = 335;
+                SDL_BlitSurface(password,NULL,ecra,&rect);
+            }
+            break;
+        }
+
+        SDL_Flip(ecra);
+        SDL_Delay(100);
+    }
+
+    if(strlen(nome) > 1)
+    {
+        //verificar utilizadores
+        fU = lerUtilizadores("users.db");
+
+        while(fU != NULL) //corre a fila
+        {
+            if((strcmp(nome,fU->jogador.username) == 0) && (strcmp(senha,fU->jogador.password) == 0) /*&& (fU->jogador.admin == 1)*/)
+                loginOK = 1; //
+            fU = fU->proximoJogador;
+        }
+    }
+    return loginOK;
 }
 
 /*
@@ -683,7 +766,38 @@ void inserirPergunta(SDL_Surface *ecra)
     //ciclo
     while(pos != 6 || Pergunta.categoria == 0)
     {
-        //fundo
+        //botoes das categorias
+        rect.x = 325; rect.y = 100;
+        SDL_BlitSurface(btMenu.btCategoriaArtes,NULL,ecra,&rect);
+        rect.x = 445;
+        SDL_BlitSurface(btMenu.btCategoriaBiologiaGeografia,NULL,ecra,&rect);
+        rect.x = 565;
+        SDL_BlitSurface(btMenu.btCategoriaHistoria,NULL,ecra,&rect);
+        rect.x = 685;
+        SDL_BlitSurface(btMenu.btCategoriaTrivialidades,NULL,ecra,&rect);
+        rect.y = 165;
+
+        //mostrar ponto verde
+        switch(Pergunta.categoria)
+        {
+        case 1:
+            rect.x = 360;
+            SDL_BlitSurface(btMenu.pontoVerde,NULL,ecra,&rect);
+            break;
+        case 2:
+            rect.x = 480;
+            SDL_BlitSurface(btMenu.pontoVerde,NULL,ecra,&rect);
+            break;
+        case 3:
+            rect.x = 600;
+            SDL_BlitSurface(btMenu.pontoVerde,NULL,ecra,&rect);
+            break;
+        case 4:
+            rect.x = 720;
+            SDL_BlitSurface(btMenu.pontoVerde,NULL,ecra,&rect);
+            break;
+        }
+
 
 
         //capturar evento
@@ -785,6 +899,7 @@ void inserirPergunta(SDL_Surface *ecra)
         SDL_Delay(80);
     }
 
+    //gravar a pergunta nova
     FILE *fp;
     fp = fopen("perguntas.db","a+");
     fprintf(fp,"\n%i;%s;%s;%s;%s;%s",Pergunta.categoria,Pergunta.pergunta,Pergunta.resposta[0],Pergunta.resposta[1],Pergunta.resposta[2],Pergunta.resposta[3]);

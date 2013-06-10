@@ -38,7 +38,7 @@ int main(int argc, char* args[])
     Mix_OpenAudio(44100,MIX_DEFAULT_FORMAT,2,4096);
 
     //titulo da janela
-    SDL_WM_SetCaption("TriGame v0.1a",NULL);
+    SDL_WM_SetCaption("TriGame e0057696e97edb7878e27c76464555c33dd0864f",NULL);
 
     /*
     *  inicializar dados

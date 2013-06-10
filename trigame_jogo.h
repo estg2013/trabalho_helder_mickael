@@ -27,6 +27,7 @@ typedef struct
     SDL_Surface *n6c;
     SDL_Surface *btOpcoesb;
     SDL_Surface *fundo2;
+    SDL_Surface *pontoVerde;
     Mix_Music *musica_menu;
     TTF_Font *font;
 }botoesMenujogo;
@@ -54,6 +55,7 @@ void recursosjogo()
  btgame.n5c = SDL_LoadBMP("img/n5c.bmp");
  btgame.n6c = SDL_LoadBMP("img/n6c.bmp");
  btgame.fundo2 = SDL_LoadBMP("img/fundo2.bmp");
+ btgame.pontoVerde = SDL_LoadBMP("img/pontoVerde.bmp");
  btgame.musica_menu = Mix_LoadMUS("music/botoes.wav");
  btgame.font = TTF_OpenFont("font/font1.ttf",28);
 }
@@ -66,15 +68,21 @@ void menujogo(SDL_Surface* ecra)
     int ratoX, ratoY,but1 = 0, but2 = 0, but3 = 0,but4= 0, but5 = 0, but6 = 0, but7 = 0;
     int estadoBotao[6] = {0,0,0,0,0,0};
     int butPressionado = 0;
+    int dificuldade = 1;
+
+
 
     SDL_Event evento;
     SDL_Rect rect = {0,0,100,100};
     SDL_Surface *msg = NULL;
     SDL_Surface *voltar = NULL;
     SDL_Surface *Jogar = NULL;
-
-
+    SDL_Surface  *facil, *medio, *dificil;
     SDL_Color cor1 = {0,0,0};SDL_Color cor2 = {0,255,0};SDL_Color cor3 = {255,0,0};
+
+    facil = TTF_RenderText_Solid(btgame.font,"Facil",cor1);
+    medio = TTF_RenderText_Solid(btgame.font,"Medio",cor1);
+    dificil = TTF_RenderText_Solid(btgame.font,"Dificil",cor1);
 
     msg = TTF_RenderText_Solid(btgame.font,"Quantos Utilizadores pretendem jogar?",cor1);
     voltar = TTF_RenderText_Solid(btgame.font,"<- Voltar ",cor2);
@@ -83,7 +91,26 @@ void menujogo(SDL_Surface* ecra)
     while(1)
     {
         SDL_PollEvent(&evento);
-         SDL_BlitSurface(btgame.fundo2,NULL,ecra,NULL);
+        SDL_BlitSurface(btgame.fundo2,NULL,ecra,NULL); //fundo
+
+        rect.y = 680;
+
+        switch(dificuldade)
+        {
+            case 1:
+                rect.x = 300;
+                break;
+            case 2:
+                rect.x = 490;
+                break;
+            case 3:
+                rect.x = 650;
+                break;
+        }
+
+        SDL_BlitSurface(btgame.pontoVerde,NULL,ecra,&rect);
+
+
         //botao n1
         rect.x = 240;
         rect.y = 210;
@@ -122,6 +149,15 @@ void menujogo(SDL_Surface* ecra)
         rect.x = 30;
         rect.y = 650;
         SDL_BlitSurface(voltar,NULL,ecra,&rect);
+
+        rect.x = 280;
+        SDL_BlitSurface(facil,NULL,ecra,&rect);
+
+        rect.x = 460;
+        SDL_BlitSurface(medio,NULL,ecra,&rect);
+
+        rect.x = 620;
+        SDL_BlitSurface(dificil,NULL,ecra,&rect);
 
         rect.x = 800;
         rect.y = 650;
@@ -208,6 +244,18 @@ void menujogo(SDL_Surface* ecra)
                     Mix_PlayMusic(btgame.musica_menu,1);
                     but6 = 1;
                     but1 = but2= but3= but4= but5= 0;
+            } else if(ratoY > 650 && ratoY < 680)
+            {
+                if(ratoX > 270 && ratoX < 360)
+                {
+                    dificuldade = 1;
+                }else if(ratoX > 455 && ratoX < 550)
+                {
+                    dificuldade = 2;
+                }else if(ratoX > 615 && ratoX < 715)
+                {
+                    dificuldade = 3;
+                }
             }
         }
 
@@ -233,7 +281,8 @@ void menujogo(SDL_Surface* ecra)
                 menu(ecra);
             }else if(ratoX > 811 && ratoX < 1012 && ratoY > 645 && ratoY < 685)
             {
-                //if(butPressionado > 0) iniciarJogo(butPressionado);
+                //iniciar o jogo se existirem numero de jogadores seleccionados
+                if(butPressionado > 0) iniciarJogo(butPressionado,ecra);
             }
 
         }
@@ -358,4 +407,11 @@ void menujogo(SDL_Surface* ecra)
   jgs  `/`\ '()()()()()() /`\`*/
 
 
+}
+
+void iniciarJogo(int numeroJogadores, SDL_Surface *ecra)
+{
+    SDL_BlitSurface(btgame.fundo2,NULL,ecra,NULL);
+    SDL_Flip(ecra);
+    SDL_Delay(2000);
 }
