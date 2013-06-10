@@ -45,7 +45,7 @@ int main(int argc, char* args[])
     */
     //funcoes iniciais
     carregarRecursos(); //carregar imagens, sons e fonts
-
+    recursosjogo();
     //filas
     //filaUtilizadores fU;
     //filaPerguntas fP;

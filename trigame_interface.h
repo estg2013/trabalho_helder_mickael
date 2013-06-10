@@ -138,6 +138,10 @@ void menu(SDL_Surface* ecra)
             ratoX = evento.motion.x;
             ratoY = evento.motion.y;
 
+            //novo jogo
+            if(ratoX > 351 && ratoX < 661 && ratoY > 302 && ratoY < 373)
+                menujogo(ecra);
+
             //clique para as opcoes
             if(ratoX > 351 && ratoX < 661 && ratoY > 374 && ratoY < 444)
                 menuOpcoes(ecra,cor1);
