@@ -215,7 +215,7 @@
 	"begin_code.h"
 	"close_code.h"
 
-1370110615 source:c:\users\mck\documents\github\trabalho_helder_mickael\main.c
+1370782038 source:c:\users\mck\documents\github\trabalho_helder_mickael\main.c
 	<stdio.h>
 	<stdlib.h>
 	<SDL/SDL.h>
@@ -225,9 +225,9 @@
 	<trigame_jogo.h>
 	<trigame_interface.h>
 
-1369781964 c:\users\mck\documents\github\trabalho_helder_mickael\\trigame_administracao.h
+1370782038 c:\users\mck\documents\github\trabalho_helder_mickael\\trigame_administracao.h
 
-1370114288 c:\users\mck\documents\github\trabalho_helder_mickael\\trigame_jogo.h
+1370782038 c:\users\mck\documents\github\trabalho_helder_mickael\\trigame_jogo.h
 
-1370110615 c:\users\mck\documents\github\trabalho_helder_mickael\\trigame_interface.h
+1370782038 c:\users\mck\documents\github\trabalho_helder_mickael\\trigame_interface.h
 
