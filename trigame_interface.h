@@ -705,7 +705,11 @@ void inserirPergunta(SDL_Surface *ecra)
             switch(evento.button.button == SDL_BUTTON_LEFT)
             {
                 default:
-                    if(ratoX > 12 && ratoX < 287 && ratoY > 10 && ratoY < 66) menuOpcoes(ecra,cor); //voltar ao menu anterior
+                    if(ratoX > 12 && ratoX < 287 && ratoY > 100 && ratoY < 200) menuOpcoes(ecra,cor); //voltar ao menu anterior
+                    if(ratoX > 125 && ratoX < 225 && ratoY > 100 && ratoY < 200) Pergunta.categoria = 1; //voltar ao menu anterior
+                    if(ratoX > 245 && ratoX < 345&& ratoY > 100 && ratoY < 200) Pergunta.categoria = 2; //voltar ao menu anterior
+                    if(ratoX > 365 && ratoX < 465 && ratoY > 100 && ratoY < 200) Pergunta.categoria = 3; //voltar ao menu anterior
+                    if(ratoX > 485 && ratoX < 585 && ratoY > 100 && ratoY < 200) Pergunta.categoria = 4; //voltar ao menu anterior
                 break;
             }
         }
@@ -772,5 +776,10 @@ void inserirPergunta(SDL_Surface *ecra)
         SDL_Delay(80);
     }
 
-    //TODO -> gravar pergunta
+    FILE *fp;
+    fp = fopen("perguntas.db","a+");
+    fprintf(fp,"\n%i;%s;%s;%s;%s;%s",Pergunta.categoria,Pergunta.pergunta,Pergunta.resposta[0],Pergunta.resposta[1],Pergunta.resposta[2],Pergunta.resposta[3]);
+    fclose(fp);
+
+    gestaoPerguntas(ecra);
 }

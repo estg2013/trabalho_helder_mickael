@@ -353,7 +353,7 @@ pergunta parsePergunta(char linha[], char separador)
 filaPerguntas lerPergunta(char ficheiroPerguntas[])
 {
     FILE *fp;
-    filaPerguntas l,c;
+    filaPerguntas l,c, cInvertida, cL;
     char linha[300];
 
     pergunta fPergunta;
@@ -378,15 +378,31 @@ filaPerguntas lerPergunta(char ficheiroPerguntas[])
 
     while(fgets(linha,300,fp)) //ler o ficheiro linha a linha ate ao fim
     {
-        fPergunta = parsePergunta(linha,';'); //dividir a linha numa estrutura para perguntas
-        c = malloc(sizeof(listaPerguntas));
-        c->perg = fPergunta;
-        c->proximaPergunta = l;
-        l = c;
+        if(strlen(linha) > 2)
+            {
+                fPergunta = parsePergunta(linha,';'); //dividir a linha numa estrutura para perguntas
+                c = malloc(sizeof(listaPerguntas));
+                c->perg = fPergunta;
+                c->proximaPergunta = l;
+                l = c;
+            }
     }
 
     fclose(fp);
-    return c;
+
+    //FIX -> inverter a fila
+    cL = NULL;
+
+    while(c != NULL)
+    {
+        cInvertida = malloc(sizeof(listaPerguntas));
+        cInvertida->perg = c->perg;
+        cInvertida->proximaPergunta = cL;
+        cL = cInvertida;
+        c = c->proximaPergunta;
+    }
+
+    return cInvertida;
 }
 
 
