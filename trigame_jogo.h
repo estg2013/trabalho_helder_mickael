@@ -271,6 +271,7 @@ void menujogo(SDL_Surface* ecra)
                         {
                             estadoBotao[2] = 1;
                             estadoBotao[1] = 0;
+                            estadoBotao[0] = 0;
                             estadoBotao[3] = 0;
                             estadoBotao[4] = 0;
                             estadoBotao[5] = 0;
@@ -284,6 +285,7 @@ void menujogo(SDL_Surface* ecra)
                         {
                             estadoBotao[3] = 1;
                             estadoBotao[2] = 0;
+                            estadoBotao[0] = 0;
                             estadoBotao[1] = 0;
                             estadoBotao[4] = 0;
                             estadoBotao[5] = 0;
@@ -299,6 +301,7 @@ void menujogo(SDL_Surface* ecra)
                             estadoBotao[4] = 1;
                             estadoBotao[2] = 0;
                             estadoBotao[3] = 0;
+                            estadoBotao[0] = 0;
                             estadoBotao[1] = 0;
                             estadoBotao[5] = 0;
                         }else{
@@ -312,6 +315,7 @@ void menujogo(SDL_Surface* ecra)
                             estadoBotao[5] = 1;
                             estadoBotao[2] = 0;
                             estadoBotao[3] = 0;
+                            estadoBotao[0] = 0;
                             estadoBotao[4] = 0;
                             estadoBotao[1] = 0;
                         }else{
