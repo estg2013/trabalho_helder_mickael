@@ -322,7 +322,7 @@ int login(SDL_Surface *ecra)
 
         while(fU != NULL) //corre a fila
         {
-            if((strcmp(nome,fU->jogador.username) == 0) && (strcmp(senha,fU->jogador.password) == 0) /*&& (fU->jogador.admin == 1)*/)
+            if((strcmp(nome,fU->jogador.username) == 0) && (strcmp(senha,fU->jogador.password) == 0) && (fU->jogador.admin == 1))
                 loginOK = 1; //
             fU = fU->proximoJogador;
         }

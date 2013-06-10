@@ -72,6 +72,7 @@ void menujogo(SDL_Surface* ecra)
 
 
 
+
     SDL_Event evento;
     SDL_Rect rect = {0,0,100,100};
     SDL_Surface *msg = NULL;

@@ -47,11 +47,11 @@ int main(int argc, char* args[])
     carregarRecursos(); //carregar imagens, sons e fonts
     recursosjogo();
     //filas
-    //filaUtilizadores fU;
+    filaUtilizadores fU;
     //filaPerguntas fP;
 
     //preencher filas
-    //if(fU = lerUtilizadores("users.db")) printf("Utilizadores - OK\n");
+    if(fU = lerUtilizadores("users.db")) printf("Utilizadores - OK\n");
     //if(fP = lerPergunta("perguntas.db")) printf("Perguntas - OK\n");
 
 

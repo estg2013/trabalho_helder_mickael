@@ -112,10 +112,10 @@ void inicializarUtilizadores(char ficheiro[])
     FILE *fp;
 
     fp = fopen(ficheiro,"w");
-        for(i=0;i<50;i++)
+        for(i=0;i<1;i++)
         {
             if(i>0) fprintf(fp,"\n");
-            fprintf(fp,"utilizador-%i,admin,%i,%i,%i",rand(),(rand()%2),rand(),rand()); //cria o admin se nao existir
+            fprintf(fp,"admin,admin,%i,%i,%i",1,0,0); //cria o admin se nao existir
         }
     fclose(fp);
 }
