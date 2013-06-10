@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 //SDL
 #include <SDL/SDL.h>
@@ -13,6 +14,7 @@
 
 #define RAND_MAX = 255;
 
+
 int main(int argc, char* args[])
 {
     /*
@@ -20,6 +22,7 @@ int main(int argc, char* args[])
     * SDL
     *   iniciar o frontend
     */
+
 
     //definir estrutura para o ecra e inicializar SDL
     SDL_Surface* ecra = NULL;
@@ -29,7 +32,7 @@ int main(int argc, char* args[])
     SDL_VideoInfo* info = SDL_GetVideoInfo();
 
     //definir a resolucao do ecra e o numero de cores
-    ecra = SDL_SetVideoMode(1024,768,32,SDL_FULLSCREEN);
+    ecra = SDL_SetVideoMode(1024,768,32,SDL_SWSURFACE);
 
     //inicializar o som
     Mix_OpenAudio(44100,MIX_DEFAULT_FORMAT,2,4096);
@@ -40,13 +43,16 @@ int main(int argc, char* args[])
     /*
     *  inicializar dados
     */
+    //funcoes iniciais
+    carregarRecursos(); //carregar imagens, sons e fonts
+
     //filas
-    filaUtilizadores fU;
-    filaPerguntas fP;
+    //filaUtilizadores fU;
+    //filaPerguntas fP;
 
     //preencher filas
-    if(fU = lerUtilizadores("users.db")) printf("Utilizadores - OK\n");
-    if(fP = lerPergunta("perguntas.db")) printf("Perguntas - OK\n");
+    //if(fU = lerUtilizadores("users.db")) printf("Utilizadores - OK\n");
+    //if(fP = lerPergunta("perguntas.db")) printf("Perguntas - OK\n");
 
 
     /*

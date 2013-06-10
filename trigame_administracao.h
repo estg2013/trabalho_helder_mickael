@@ -25,6 +25,7 @@ typedef struct
 } utilizador;
 
 
+
 /************************** UTILIZADORES *******************************/
 
 //fila de jogadores
@@ -104,15 +105,48 @@ utilizador parseUtilizador(char utili[], char separador)
     return u;
 }
 
+//inicializar ficheiro com os utilizadores
+void inicializarUtilizadores(char ficheiro[])
+{
+    int i;
+    FILE *fp;
+
+    fp = fopen(ficheiro,"w");
+        for(i=0;i<50;i++)
+        {
+            if(i>0) fprintf(fp,"\n");
+            fprintf(fp,"utilizador-%i,admin,%i,%i,%i",rand(),(rand()%2),rand(),rand()); //cria o admin se nao existir
+        }
+    fclose(fp);
+}
+
+/*
+* um morcego
+*
+*                      _..-'(                       )`-.._
+                   ./'. '||\\.       (\_/)       .//||` .`\.
+                ./'.|'.'||||\\|..    )O O(    ..|//||||`.`|.`\.
+             ./'..|'.|| |||||\`````` '`"'` ''''''/||||| ||.`|..`\.
+           ./'.||'.|||| ||||||||||||.     .|||||||||||| |||||.`||.`\.
+          /'|||'.|||||| ||||||||||||{     }|||||||||||| ||||||.`|||`\
+         '.|||'.||||||| ||||||||||||{     }|||||||||||| |||||||.`|||.`
+        '.||| ||||||||| |/'   ``\||``     ''||/''   `\| ||||||||| |||.`
+        |/' \./'     `\./         \!|\   /|!/         \./'     `\./ `\|
+        V    V         V          }' `\ /' `{          V         V    V
+        `    `         `               V               '         '    '
+
+*/
+
 //ler os utilizadores para a fila de utilizadores
 filaUtilizadores lerUtilizadores(char ficheiro[])
 {
     char linha[200];
     int i = 0;
-    filaUtilizadores l,c;
+    filaUtilizadores l,c, cInvertida, cL;
     utilizador fUtilizador; //utilizador para ler a linha do ficheiro
 
     l = NULL;
+    cL = NULL;
 
     FILE *fp; //apontador para o ficheiro
     fp = fopen(ficheiro,"r"); //abrir o ficheiro em de leitura texto
@@ -120,14 +154,8 @@ filaUtilizadores lerUtilizadores(char ficheiro[])
     if(!fp) //se o ficheiro de utilizadores existir
     {
         fclose(fp); //TODO: verificar se e necessario fechar o ficheiro
-        fp = fopen(ficheiro,"w");
-        for(i=0;i<100;i++)
-        {
-            if(i>0) fprintf(fp,"\n");
-            fprintf(fp,"utilizador-%i,admin,%i,%i,%i",rand(),(rand()%2),rand(),rand()); //cria o admin se nao existir
-        }
+        inicializarUtilizadores(ficheiro);
     }
-    fclose(fp);
 
     fp = fopen(ficheiro,"r"); //abrir o ficheiro em de leitura texto
 
@@ -146,7 +174,18 @@ filaUtilizadores lerUtilizadores(char ficheiro[])
 
     fclose(fp);
 
-    return c;
+
+    //FIX: inverter o que é lido do ficheiro
+    while(c != NULL)
+    {
+        cInvertida = malloc(sizeof(listaUtilizadores));
+        cInvertida->jogador = c->jogador;
+        cInvertida->proximoJogador = cL;
+        cL = cInvertida;
+        c = c->proximoJogador;
+    }
+
+    return cInvertida;
 }
 
 //criar novo utilizador
@@ -179,6 +218,64 @@ utilizador alterarUtilizador(utilizador utilizadorAalterar)
 
     return utilizadorAlterado;
 }
+
+
+//apagar utilizador
+/*
+* Operacoes: 1 -> Apaga o jogador, 2 -> Altera a flag de administrador
+*
+*
+*/
+void modificarUtilizadores(filaUtilizadores fU, char nUtilizador[], int operacao)
+{
+    FILE *fp;
+    char linha[300];
+    int contadorU = 0, admin;
+
+    fp = fopen("users.db","w"); //ficheiro de utilizadores para escrita
+
+    //gravar os utilizadores excepto o utilizador a apagar
+    while(fU != NULL)
+    {
+        //verifica se e o jogador a apagar
+        if(strcmp(fU->jogador.username,nUtilizador) == 0)
+        {
+            //TODO: backup jogador apagado
+            switch(operacao)
+            {
+            case 1:
+                    //apaga o jogador
+                break;
+            case 2:
+                    //alterar para admin
+                    if(contadorU > 0) fprintf(fp,"\n");
+                    if(fU->jogador.admin == 0)
+                    {
+                        admin = 1;
+                    }else{
+                        admin = 0;
+                    }
+                    fprintf(fp,"%s,%s,%i,%i,%i",fU->jogador.username,fU->jogador.password,admin,fU->jogador.respostas_certas,fU->jogador.respostas_erradas);
+                    contadorU++;
+                break;
+            }
+        }else{
+            //guarda o jogador novamente no ficheiro
+            if(contadorU > 0) fprintf(fp,"\n");
+            fprintf(fp,"%s,%s,%i,%i,%i",fU->jogador.username,fU->jogador.password,fU->jogador.admin,fU->jogador.respostas_certas,fU->jogador.respostas_erradas);
+            contadorU++;
+        }
+        fU = fU->proximoJogador;
+    }
+    fclose(fp);
+}
+
+
+
+
+
+
+
 
 /********************************* PERGUNTAS *******************************/
 //struct fila perguntas
@@ -256,7 +353,7 @@ pergunta parsePergunta(char linha[], char separador)
 filaPerguntas lerPergunta(char ficheiroPerguntas[])
 {
     FILE *fp;
-    filaPerguntas l,c;
+    filaPerguntas l,c, cInvertida, cL;
     char linha[300];
 
     pergunta fPergunta;
@@ -273,6 +370,7 @@ filaPerguntas lerPergunta(char ficheiroPerguntas[])
         fclose(fp);
         fp = fopen(ficheiroPerguntas,"w");
         fprintf(fp,"1;Quem foi o primeiro rei de Portugal?;D. Afonso Henriques;Helder Postiga;Pinto da Costa;Barack Obama"); //escrever uma pergunta no ficheiro
+        fprintf(fp,"\n2;Simbolo quimico do Oxigenio?;O;Ni;K;Po"); //escrever uma pergunta no ficheiro
         fclose(fp);
     }
 
@@ -280,14 +378,31 @@ filaPerguntas lerPergunta(char ficheiroPerguntas[])
 
     while(fgets(linha,300,fp)) //ler o ficheiro linha a linha ate ao fim
     {
-        fPergunta = parsePergunta(linha,';'); //dividir a linha numa estrutura para perguntas
-        c = malloc(sizeof(listaPerguntas));
-        c->perg = fPergunta;
-        c->proximaPergunta = l;
-        l = c;
+        if(strlen(linha) > 2)
+            {
+                fPergunta = parsePergunta(linha,';'); //dividir a linha numa estrutura para perguntas
+                c = malloc(sizeof(listaPerguntas));
+                c->perg = fPergunta;
+                c->proximaPergunta = l;
+                l = c;
+            }
     }
 
-    return c;
+    fclose(fp);
+
+    //FIX -> inverter a fila
+    cL = NULL;
+
+    while(c != NULL)
+    {
+        cInvertida = malloc(sizeof(listaPerguntas));
+        cInvertida->perg = c->perg;
+        cInvertida->proximaPergunta = cL;
+        cL = cInvertida;
+        c = c->proximaPergunta;
+    }
+
+    return cInvertida;
 }
 
 
@@ -304,4 +419,42 @@ pergunta criarPergunta(int categoria, char npergunta[], char respostaCerta[], ch
     strcpy(novaPergunta.resposta[3],resposta3);
 
     return novaPergunta;
+}
+
+
+//modificar perguntas
+/*
+*   1 - apaga pergunta
+*
+*
+*/
+
+void modificarPerguntas(filaPerguntas fP, char pergunta[], int operacao)
+{
+    FILE *fp;
+    fp = fopen("perguntas.db","w");
+    int contP = 0;
+
+    while(fP != NULL)
+        {
+            switch(operacao)
+            {
+            case 1:
+                if(strcmp(pergunta,fP->perg.pergunta) == 0) //compara a pergunta
+                {
+                    //apaga a pergunta
+                }else{
+                    //escreve a pergunta para o ficheiro
+                    if(contP > 0) fprintf(fp,"\n");
+                    fprintf(fp,"%i;%s;%s;%s;%s;%s",fP->perg.categoria,fP->perg.pergunta,fP->perg.resposta[0],fP->perg.resposta[1],fP->perg.resposta[2],fP->perg.resposta[3]);
+                    contP++;
+                }
+                break;
+            default:
+
+                break;
+            }
+            fP = fP->proximaPergunta;
+        }
+    fclose(fp);
 }
