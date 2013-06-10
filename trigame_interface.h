@@ -26,6 +26,12 @@ typedef struct
 
 botoesMenu btMenu;
 
+typedef struct{
+    char texto[200];
+    int x;
+    int y;
+} textoEcra;
+
 //procedimento para carregar as imagens para a memoria
 void carregarRecursos()
 {
@@ -215,6 +221,7 @@ void menuOpcoes(SDL_Surface* ecra, SDL_Color cor1)
             }else if(ratoX > 366 && ratoX < 588 && ratoY > 367 && ratoY < 401)
             {
                 //TODO: gestao de perguntas
+                gestaoPerguntas(ecra);
 
             }else if(ratoX > 386 && ratoX < 572 && ratoY > 587 && ratoY < 621)
             {
@@ -246,15 +253,16 @@ void inserirJogador(SDL_Surface *ecra)
     SDL_Surface *texto = NULL;
     SDL_Color cor = {0,0,0};
     SDL_Rect rect = {0,0,100,100};
-    rect.x = 200;
-    rect.y = 200;
+    SDL_Rect rectJanela;
+    rectJanela.x = 200;
+    rectJanela.y = 200;
     int inserirUsername = 1, ratoX, ratoY, tamtexto = 0,i;
     char txt[100],inp[100], inp_temp[100];
     char unic;
 
     sprintf(inp,"");
 
-    SDL_BlitSurface(btMenu.frmNovoUtilizador,NULL,ecra,&rect);
+    SDL_BlitSurface(btMenu.frmNovoUtilizador,NULL,ecra,&rectJanela);
 
     rect.x = 364;
     rect.y = 234;
@@ -276,7 +284,17 @@ void inserirJogador(SDL_Surface *ecra)
                     sprintf(inp,"");
                     rect.y = 335;
                     inserirUsername = 0;
+                }else if(inserirUsername == 0)
+                {
+                    FILE *fp;
+                    fp = fopen("users.db","a+");
+                    fprintf(fp,"\n%s,%s,%i,%i,%i",inp_temp,inp,0,0,0);
+                    fclose(fp);
+                    gestaoUtilizadores(ecra);
                 }
+                break;
+            case SDLK_BACKSPACE:
+
                 break;
             //escape
             case SDLK_ESCAPE:
@@ -317,9 +335,6 @@ void inserirJogador(SDL_Surface *ecra)
         SDL_Flip(ecra);
     }
 }
-
-
-
 
 
 //menu com a lista de utilizadores carregados a partir do ficheiro
@@ -431,7 +446,7 @@ void gestaoUtilizadores(SDL_Surface *ecra)
                             if(ratoY > nomes[j].y && ratoY < (nomes[j].y + 40))
                             {
                                 //apaga o utilizador clicado
-                                modificarUtilizadores(fUinicial,nUtilizadores[j],2); //apaga o utilizador
+                                modificarUtilizadores(fUinicial,nUtilizadores[j],2); //altera o utilizador (2) -> alterar para admin
                                 fUinicial = lerUtilizadores("users.db"); //reinicia as filas
                                 posU = 0; //coloca a lista no inicio
                             }
@@ -447,7 +462,7 @@ void gestaoUtilizadores(SDL_Surface *ecra)
                             if(ratoY > nomes[j].y && ratoY < (nomes[j].y + 40))
                             {
                                 //apaga o utilizador clicado
-                                modificarUtilizadores(fUinicial,nUtilizadores[j],1); //apaga o utilizador
+                                modificarUtilizadores(fUinicial,nUtilizadores[j],1); //apaga o utilizador (1) -> apagar o utilizadador
                                 fUinicial = lerUtilizadores("users.db"); //reinicia as filas
                                 posU = 0; //coloca a lista no inicio
                             }
@@ -478,8 +493,285 @@ void gestaoUtilizadores(SDL_Surface *ecra)
                  menuOpcoes(ecra,cor);
         }
 
-        //actualizar ecra e esperar 50ms
+        //actualizar ecra e esperar 80ms
         SDL_Flip(ecra);
         SDL_Delay(80);
     }
+}
+
+
+
+/*
+*
+*   gestao de perguntas
+*
+*/
+void gestaoPerguntas(SDL_Surface *ecra)
+{
+    SDL_Event evento;
+    SDL_Color cor = {0,0,0};
+
+    SDL_Surface *texto;
+    SDL_Rect rect;
+    int i, posP = 0, posPerguntas[12];
+    int ratoX, ratoY;
+    int contadorP = 0;
+    char perguntas[12][200];
+
+    filaPerguntas fP, fPinicial; //apontadores para as filas
+
+    fPinicial = lerPergunta("perguntas.db"); //carrega a fila das perguntas
+    fP = fPinicial;
+
+    //ciclo principal
+    while(1)
+    {
+        SDL_BlitSurface(btMenu.fundo2,NULL,ecra,NULL); //fundo
+        rect.y = 30;
+        rect.x = 500;
+        texto = TTF_RenderText_Solid(btMenu.font,"PERGUNTAS",cor); //titulo
+        SDL_BlitSurface(texto,NULL,ecra,&rect);
+
+
+        fP = fPinicial; //reiniciar a fila temporaria
+        SDL_PollEvent(&evento); //obter evento
+
+        rect.x = 770;
+        rect.y = 90;
+        if(posP > 0) SDL_BlitSurface(btMenu.setaCima,NULL,ecra,&rect); //seta cima
+
+        rect.y = 530;
+        SDL_BlitSurface(btMenu.setaBaixo,NULL,ecra,&rect); //seta baixo
+
+        rect.y = 350;
+        rect.x = 820;
+        SDL_BlitSurface(btMenu.btMais,NULL,ecra,&rect);//mais
+
+
+        rect.x = 25;
+        rect.y = 25;
+        i = 0;
+        contadorP = 0;
+
+       while(fP != NULL && i < 12) //correr a fila e escrever as perguntas
+        {
+            if(contadorP >= posP && contadorP < (posP+12))
+                {
+                    rect.y = rect.y + 50; //incrementa a posicao vertical do texto a mostrar
+                    posPerguntas[i] = rect.y;
+                    strcpy(perguntas[i],fP->perg.pergunta);
+                    texto = TTF_RenderText_Solid(btMenu.font,perguntas[i],cor);
+                    SDL_BlitSurface(texto,NULL,ecra,&rect);
+                    i++;
+                }
+            fP = fP->proximaPergunta; //avanca a fila
+            contadorP++;
+        }
+
+
+        //movimento do rato
+        if(evento.type == SDL_MOUSEMOTION) //obter as coordenadas do rato
+        {
+            ratoX = evento.motion.x;
+            ratoY = evento.motion.y;
+        }
+
+        if(evento.type == SDL_MOUSEBUTTONDOWN) //clique do rato
+        {
+            switch(evento.button.button)
+            {
+            case SDL_BUTTON_LEFT: //botao esquerdo do rato
+                if(ratoX > 12 && ratoX < 287 && ratoY > 10 && ratoY < 66) menuOpcoes(ecra,cor); //voltar ao menu anterior
+                if(ratoX > 770 && ratoX < 992 && ratoY > 532 && ratoY < 750 && posP < (contadorP-1)) posP++; //seta para baixo
+                if(ratoX > 770 && ratoX < 992 && ratoY > 94 && ratoY < 314 && posP > 0) posP--; //seta para cima
+                if(ratoX > 836 && ratoX < 930 && ratoY > 362 && ratoY < 461) inserirPergunta(ecra); //criar nova pegunta
+                break;
+            case SDL_BUTTON_RIGHT: //botao direito do rato
+                //apagar pergunta
+                if(ratoX > 25 && ratoX < 750) //verificar qual a pergunta clicada
+                {
+                    for(i=0;i<12;i++)
+                    {
+                        if(ratoY > posPerguntas[i] && ratoY < (posPerguntas[i] + 40))
+                        {
+                            modificarPerguntas(fPinicial,perguntas[i],1); //apagar a pergunta no ficheiro
+                            fPinicial = lerPergunta("perguntas.db"); //carregar novamente o ficheiro de perguntas
+                        }
+                    }
+                }
+                break;
+            default:
+                break;
+            }
+        }
+
+        if(evento.type == SDL_KEYDOWN) //tecla para voltar ao menu inicial
+        {
+            menu(ecra);
+        }
+        SDL_Flip(ecra);
+        SDL_Delay(80);
+    }
+
+    //volta ao menu inicial
+    menu(ecra);
+}
+
+void inserirPergunta(SDL_Surface *ecra)
+{
+    char perg[200], respostas[4][200];
+    int unic;
+    int i;
+    int pos = 1;
+    int ratoX, ratoY;
+    pergunta Pergunta;
+
+    //inicializar estrutura
+    Pergunta.categoria = 0;
+    strcpy(Pergunta.pergunta,"");
+    for(i=0;i<4;i++)
+    {
+        strcpy(Pergunta.resposta[i],"");
+    }
+
+
+    SDL_Color cor = {0,0,0};
+
+    textoEcra txt[6];
+    SDL_Surface *texto[6],*textoDinamico;
+    SDL_Color cor1 = {0,0,0};
+    SDL_Rect rect;
+    SDL_Event evento;
+
+    //definir textos e posicoes
+    strcpy(txt[0].texto,"CATEGORIA:");
+    txt[0].x = 25;
+    txt[0].y = 125;
+    texto[0] = TTF_RenderText_Solid(btMenu.font,txt[0].texto,cor1);
+
+    strcpy(txt[1].texto,"PERGUNTA:");
+    txt[1].x = 25;
+    txt[1].y = 225;
+    texto[1] = TTF_RenderText_Solid(btMenu.font,txt[1].texto,cor1);
+
+    strcpy(txt[2].texto,"RESP CORRECTA:");
+    txt[2].x = 25;
+    txt[2].y = 295;
+    texto[2] = TTF_RenderText_Solid(btMenu.font,txt[2].texto,cor1);
+
+    strcpy(txt[3].texto,"RESP ERRADA 1:");
+    txt[3].x = 25;
+    txt[3].y = 365;
+    texto[3] = TTF_RenderText_Solid(btMenu.font,txt[3].texto,cor1);
+
+    strcpy(txt[4].texto,"RESP ERRADA 2:");
+    txt[4].x = 25;
+    txt[4].y = 435;
+    texto[4] = TTF_RenderText_Solid(btMenu.font,txt[4].texto,cor1);
+
+    strcpy(txt[5].texto,"RESP ERRADA 3:");
+    txt[5].x = 25;
+    txt[5].y = 505;
+    texto[5] = TTF_RenderText_Solid(btMenu.font,txt[5].texto,cor1);
+
+    SDL_BlitSurface(btMenu.fundo2,NULL,ecra,NULL);
+
+    //ciclo
+    while(pos != 6 || Pergunta.categoria == 0)
+    {
+        //fundo
+
+
+        //capturar evento
+        SDL_PollEvent(&evento);
+
+        //mostrar texto no ecra
+        for(i=0;i<6;i++)
+        {
+            rect.x = txt[i].x;
+            rect.y = txt[i].y;
+            SDL_BlitSurface(texto[i],NULL,ecra,&rect);
+        }
+
+        if(evento.type == SDL_MOUSEMOTION)
+        {
+            ratoX = evento.motion.x;
+            ratoY = evento.motion.y;
+        }
+
+
+        if(evento.type == SDL_MOUSEBUTTONDOWN)
+        {
+            switch(evento.button.button == SDL_BUTTON_LEFT)
+            {
+                default:
+                    if(ratoX > 12 && ratoX < 287 && ratoY > 10 && ratoY < 66) menuOpcoes(ecra,cor); //voltar ao menu anterior
+                break;
+            }
+        }
+
+
+        if(evento.type == SDL_KEYDOWN)
+        {
+            unic = (char)evento.key.keysym.sym; //input do teclado
+            switch(evento.key.keysym.sym)
+            {
+
+            case SDLK_RETURN:
+                    pos++;
+                break;
+
+            default:
+                switch(pos)
+                {
+                    case 1: //pergunta
+                        sprintf(Pergunta.pergunta,"%s%c",Pergunta.pergunta,unic);
+                        rect.x = txt[pos].x + 215;
+                        rect.y = txt[pos].y;
+                        textoDinamico = TTF_RenderText_Solid(btMenu.font,Pergunta.pergunta,cor);
+                        SDL_BlitSurface(textoDinamico,NULL,ecra,&rect);
+                        break;
+                    case 2: //resposta certa
+                        sprintf(Pergunta.resposta[0],"%s%c",Pergunta.resposta[0],unic);
+                        rect.x = txt[pos].x + 305;
+                        rect.y = txt[pos].y;
+                        textoDinamico = TTF_RenderText_Solid(btMenu.font,Pergunta.resposta[0],cor);
+                        SDL_BlitSurface(textoDinamico,NULL,ecra,&rect);
+                        break;
+                    case 3: //resposta errada 1
+                        sprintf(Pergunta.resposta[1],"%s%c",Pergunta.resposta[1],unic);
+                        rect.x = txt[pos].x + 285;
+                        rect.y = txt[pos].y;
+                        textoDinamico = TTF_RenderText_Solid(btMenu.font,Pergunta.resposta[1],cor);
+                        SDL_BlitSurface(textoDinamico,NULL,ecra,&rect);
+                        break;
+                    case 4: //resposta errada 2
+                        sprintf(Pergunta.resposta[2],"%s%c",Pergunta.resposta[2],unic);
+                        rect.x = txt[pos].x + 285;
+                        rect.y = txt[pos].y;
+                        textoDinamico = TTF_RenderText_Solid(btMenu.font,Pergunta.resposta[2],cor);
+                        SDL_BlitSurface(textoDinamico,NULL,ecra,&rect);
+                        break;
+                    case 5: //resposta errada 3
+                        sprintf(Pergunta.resposta[3],"%s%c",Pergunta.resposta[3],unic);
+                        rect.x = txt[pos].x + 285;
+                        rect.y = txt[pos].y;
+                        textoDinamico = TTF_RenderText_Solid(btMenu.font,Pergunta.resposta[3],cor);
+                        SDL_BlitSurface(textoDinamico,NULL,ecra,&rect);
+                        break;
+                    default:
+                        break;
+                }
+            break;
+            }
+        }
+
+
+
+        //actualizar ecra
+        SDL_Flip(ecra);
+        SDL_Delay(80);
+    }
+
+    //TODO -> gravar pergunta
 }

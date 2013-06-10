@@ -25,6 +25,7 @@ typedef struct
 } utilizador;
 
 
+
 /************************** UTILIZADORES *******************************/
 
 //fila de jogadores
@@ -120,6 +121,7 @@ void inicializarUtilizadores(char ficheiro[])
 }
 
 /*
+* um morcego
 *
 *                      _..-'(                       )`-.._
                    ./'. '||\\.       (\_/)       .//||` .`\.
@@ -219,6 +221,11 @@ utilizador alterarUtilizador(utilizador utilizadorAalterar)
 
 
 //apagar utilizador
+/*
+* Operacoes: 1 -> Apaga o jogador, 2 -> Altera a flag de administrador
+*
+*
+*/
 void modificarUtilizadores(filaUtilizadores fU, char nUtilizador[], int operacao)
 {
     FILE *fp;
@@ -363,6 +370,7 @@ filaPerguntas lerPergunta(char ficheiroPerguntas[])
         fclose(fp);
         fp = fopen(ficheiroPerguntas,"w");
         fprintf(fp,"1;Quem foi o primeiro rei de Portugal?;D. Afonso Henriques;Helder Postiga;Pinto da Costa;Barack Obama"); //escrever uma pergunta no ficheiro
+        fprintf(fp,"\n2;Simbolo quimico do Oxigenio?;O;Ni;K;Po"); //escrever uma pergunta no ficheiro
         fclose(fp);
     }
 
@@ -377,6 +385,7 @@ filaPerguntas lerPergunta(char ficheiroPerguntas[])
         l = c;
     }
 
+    fclose(fp);
     return c;
 }
 
@@ -396,3 +405,40 @@ pergunta criarPergunta(int categoria, char npergunta[], char respostaCerta[], ch
     return novaPergunta;
 }
 
+
+//modificar perguntas
+/*
+*   1 - apaga pergunta
+*
+*
+*/
+
+void modificarPerguntas(filaPerguntas fP, char pergunta[], int operacao)
+{
+    FILE *fp;
+    fp = fopen("perguntas.db","w");
+    int contP = 0;
+
+    while(fP != NULL)
+        {
+            switch(operacao)
+            {
+            case 1:
+                if(strcmp(pergunta,fP->perg.pergunta) == 0) //compara a pergunta
+                {
+                    //apaga a pergunta
+                }else{
+                    //escreve a pergunta para o ficheiro
+                    if(contP > 0) fprintf(fp,"\n");
+                    fprintf(fp,"%i;%s;%s;%s;%s;%s",fP->perg.categoria,fP->perg.pergunta,fP->perg.resposta[0],fP->perg.resposta[1],fP->perg.resposta[2],fP->perg.resposta[3]);
+                    contP++;
+                }
+                break;
+            default:
+
+                break;
+            }
+            fP = fP->proximaPergunta;
+        }
+    fclose(fp);
+}
