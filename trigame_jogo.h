@@ -64,6 +64,7 @@ void menujogo(SDL_Surface* ecra)
     char texto[100];
     int ratoX, ratoY,but1 = 0, but2 = 0, but3 = 0,but4= 0, but5 = 0, but6 = 0, but7 = 0;
     int estadoBotao[6] = {0,0,0,0,0,0};
+    int butPressionado = 0;
 
     SDL_Event evento;
     SDL_Rect rect = {0,0,100,100};
@@ -78,7 +79,7 @@ void menujogo(SDL_Surface* ecra)
     voltar = TTF_RenderText_Solid(btgame.font,"<- Voltar ",cor2);
     Jogar = TTF_RenderText_Solid(btgame.font," Iniciar ->",cor3);
 
-     while(1)
+    while(1)
     {
         SDL_PollEvent(&evento);
          SDL_BlitSurface(btgame.fundo2,NULL,ecra,NULL);
@@ -229,6 +230,9 @@ void menujogo(SDL_Surface* ecra)
             if (ratoX > 17 && ratoX < 278 && ratoY > 15 && ratoY < 62)
             {
                 menu(ecra);
+            }else if(ratoX > 811 && ratoX < 1012 && ratoY > 645 && ratoY < 685)
+            {
+                //if(butPressionado > 0) iniciarJogo(butPressionado);
             }
 
         }
@@ -239,6 +243,7 @@ void menujogo(SDL_Surface* ecra)
                     ratoY = evento.motion.y;
                     if  (ratoX > 241 && ratoX < 385 && ratoY > 211 && ratoY < 344)
                     {
+                        butPressionado = 1;
                         if(estadoBotao[0] == 0)
                         {
                             estadoBotao[0] = 1;
@@ -253,6 +258,7 @@ void menujogo(SDL_Surface* ecra)
                     }
                      if (ratoX > 441 && ratoX < 582 && ratoY > 211 && ratoY < 344)
                     {
+                        butPressionado = 2;
                          if(estadoBotao[1] == 0)
                         {
                             estadoBotao[1] = 1;
@@ -267,6 +273,7 @@ void menujogo(SDL_Surface* ecra)
                     }
                      if (ratoX > 641 && ratoX < 782 && ratoY > 211 && ratoY < 344)
                     {
+                        butPressionado = 3;
                         if(estadoBotao[2] == 0)
                         {
                             estadoBotao[2] = 1;
@@ -281,6 +288,7 @@ void menujogo(SDL_Surface* ecra)
                     }
                      if (ratoX > 240 && ratoX < 382 && ratoY > 406 && ratoY < 540)
                     {
+                        butPressionado = 4;
                         if(estadoBotao[3] == 0)
                         {
                             estadoBotao[3] = 1;
@@ -296,6 +304,7 @@ void menujogo(SDL_Surface* ecra)
 
                     if (ratoX > 441 && ratoX < 582 && ratoY > 406 && ratoY < 540)
                     {
+                        butPressionado = 5;
                          if(estadoBotao[4] == 0)
                         {
                             estadoBotao[4] = 1;
@@ -310,6 +319,7 @@ void menujogo(SDL_Surface* ecra)
                     }
                     if (ratoX > 641 && ratoX < 782 && ratoY > 406 && ratoY < 540)
                     {
+                        butPressionado = 6;
                         if(estadoBotao[5] == 0)
                         {
                             estadoBotao[5] = 1;
@@ -329,5 +339,22 @@ void menujogo(SDL_Surface* ecra)
         SDL_Delay(50);
 
     }
+
+    /* miss piggy
+           /  '.     .'  \
+          | |`\ \,,,/ /`| |
+           \.;;;;;-;;;;;./
+          .;;;;-'"'"'-;;;;,
+         ;;.-((((   ))))-.;;
+       ,;;/ =/_o/___\o_\= \;;,
+     ,;;;/    .-'   '-.    \;;;,
+   ,;;;;/    /         \    \;;;;,
+  ,;;;;|     \  \   /  /     |;;;;,
+  ;;;;;\    /-`.__.__.`-\    /;;;;;
+   ;;;;;\  `    \.-./    `  /;;;;;
+    ;;;;;;-._  , '-' ,  _.-;;;;;;
+     ';;;;/()`'-'-=-'-'`()\;;;;'
+  jgs  `/`\ '()()()()()() /`\`*/
+
 
 }
