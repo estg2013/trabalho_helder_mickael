@@ -119,7 +119,6 @@ void menu(SDL_Surface* ecra)
                         Mix_PlayMusic(btMenu.musica_menu,1);
                     but3 = 1;
                     but2 = but1 = 0;
-
             }else{
                 but1 = 0;
                 but2 = 0;
