@@ -9,7 +9,7 @@
 
 1369174086 c:\users\mickael\documents\github\trabalho_helder_mickael\\trigame_jogo.h
 
-1370867293 source:c:\users\burnspirit\documents\github\trabalho_helder_mickael\main.c
+1370885774 source:c:\users\burnspirit\documents\github\trabalho_helder_mickael\main.c
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
@@ -20,11 +20,11 @@
 	<trigame_jogo.h>
 	<trigame_interface.h>
 
-1370873551 c:\users\burnspirit\documents\github\trabalho_helder_mickael\\trigame_administracao.h
+1370885661 c:\users\burnspirit\documents\github\trabalho_helder_mickael\\trigame_administracao.h
 
-1370701841 c:\users\burnspirit\documents\github\trabalho_helder_mickael\\trigame_jogo.h
+1370879652 c:\users\burnspirit\documents\github\trabalho_helder_mickael\\trigame_jogo.h
 
-1370878369 c:\users\burnspirit\documents\github\trabalho_helder_mickael\\trigame_interface.h
+1370886683 c:\users\burnspirit\documents\github\trabalho_helder_mickael\\trigame_interface.h
 
 1325742239 c:\users\burnspirit\downloads\sdl-devel-1.2.15-mingw32.tar\sdl-devel-1.2.15-mingw32\sdl-1.2.15\include\sdl\sdl.h
 	"SDL_main.h"

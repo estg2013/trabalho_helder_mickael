@@ -619,7 +619,7 @@ void gestaoPerguntas(SDL_Surface *ecra)
 
 void inserirPergunta(SDL_Surface *ecra)
 {
-    char perg[200], respostas[4][200];
+    char perg[200], respostas[4][200],titulo[200];
     int unic;
     int i;
     int pos = 1;
@@ -697,7 +697,10 @@ void inserirPergunta(SDL_Surface *ecra)
         {
             ratoX = evento.motion.x;
             ratoY = evento.motion.y;
+            sprintf(titulo,"Rato X: %i Y: %i\tCategoria %i",ratoX,ratoY,Pergunta.categoria);
+            SDL_WM_SetCaption(titulo,NULL);
         }
+
 
 
         if(evento.type == SDL_MOUSEBUTTONDOWN)
@@ -705,11 +708,13 @@ void inserirPergunta(SDL_Surface *ecra)
             switch(evento.button.button == SDL_BUTTON_LEFT)
             {
                 default:
-                    if(ratoX > 12 && ratoX < 287 && ratoY > 100 && ratoY < 200) menuOpcoes(ecra,cor); //voltar ao menu anterior
-                    if(ratoX > 125 && ratoX < 225 && ratoY > 100 && ratoY < 200) Pergunta.categoria = 1; //voltar ao menu anterior
-                    if(ratoX > 245 && ratoX < 345&& ratoY > 100 && ratoY < 200) Pergunta.categoria = 2; //voltar ao menu anterior
-                    if(ratoX > 365 && ratoX < 465 && ratoY > 100 && ratoY < 200) Pergunta.categoria = 3; //voltar ao menu anterior
-                    if(ratoX > 485 && ratoX < 585 && ratoY > 100 && ratoY < 200) Pergunta.categoria = 4; //voltar ao menu anterior
+                    if(ratoX > 12 && ratoX < 287 && ratoY > 1 && ratoY < 64) menuOpcoes(ecra,cor); //voltar ao menu anterior
+                    if(ratoX > 325 && ratoX < 425 && ratoY > 100 && ratoY < 200) Pergunta.categoria = 1; //voltar ao menu anterior
+                    if(ratoX > 445 && ratoX < 545&& ratoY > 100 && ratoY < 200) Pergunta.categoria = 2; //voltar ao menu anterior
+                    if(ratoX > 565 && ratoX < 665 && ratoY > 100 && ratoY < 200) Pergunta.categoria = 3; //voltar ao menu anterior
+                    if(ratoX > 685 && ratoX < 785 && ratoY > 100 && ratoY < 200) Pergunta.categoria = 4; //voltar ao menu anterior
+                    sprintf(titulo,"Rato X: %i Y: %i\tCategoria %i",ratoX,ratoY,Pergunta.categoria);
+                    SDL_WM_SetCaption(titulo,NULL);
                 break;
             }
         }
