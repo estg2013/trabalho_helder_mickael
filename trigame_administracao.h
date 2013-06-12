@@ -22,7 +22,15 @@ typedef struct
     int admin;
     int respostas_certas;
     int respostas_erradas;
+    int seleccionado;
+    int jogoCertas;
+    int jogoErradas;
 } utilizador;
+
+typedef struct{
+    int x;
+    int y;
+}posicoes;
 
 
 
@@ -32,6 +40,7 @@ typedef struct
 typedef struct lUtilizadores
 {
     utilizador jogador;
+    posicoes pos;
     struct lUtilizadores *proximoJogador;
 } listaUtilizadores;
 
