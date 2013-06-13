@@ -32,7 +32,7 @@ int main(int argc, char* args[])
     SDL_VideoInfo* info = SDL_GetVideoInfo();
 
     //definir a resolucao do ecra e o numero de cores
-    ecra = SDL_SetVideoMode(1024,768,32,SDL_SWSURFACE);
+    ecra = SDL_SetVideoMode(1024,768,32,SDL_FULLSCREEN);
 
     //inicializar o som
     Mix_OpenAudio(44100,MIX_DEFAULT_FORMAT,2,4096);

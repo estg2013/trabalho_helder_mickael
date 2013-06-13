@@ -489,7 +489,7 @@ void gestaoUtilizadores(SDL_Surface *ecra)
                         nomes[i].x = 120;
                         nomes[i].y = (130)+(60*i);
                         strcpy(nUtilizadores[i],fU->jogador.username);
-                        sprintf(texto,"%i - %s -> Nivel %i",(i + posU),nUtilizadores[i],fU->jogador.respostas_certas);
+                        sprintf(texto,"%i - %s -> Certas %i - Erradas %i",(i + posU),nUtilizadores[i],fU->jogador.respostas_certas,fU->jogador.respostas_erradas);
                         if(fU->jogador.admin == 1)
                         {
                             txtUtilizador = TTF_RenderText_Solid(btMenu.font,texto,corAdmin);

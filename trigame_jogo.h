@@ -27,9 +27,12 @@ typedef struct
     SDL_Surface *n6c;
     SDL_Surface *btOpcoesb;
     SDL_Surface *fundo2;
+    SDL_Surface *fundo3;
+    SDL_Surface *fundo4;
     SDL_Surface *pontoVerde;
     Mix_Music *musica_menu;
     TTF_Font *font;
+    TTF_Font *font2;
 }botoesMenujogo;
 
 botoesMenujogo btgame;
@@ -55,9 +58,12 @@ void recursosjogo()
  btgame.n5c = SDL_LoadBMP("img/n5c.bmp");
  btgame.n6c = SDL_LoadBMP("img/n6c.bmp");
  btgame.fundo2 = SDL_LoadBMP("img/fundo2.bmp");
+ btgame.fundo3 = SDL_LoadBMP("img/fundo3.bmp");
+ btgame.fundo4 = SDL_LoadBMP("img/fundo4.bmp");
  btgame.pontoVerde = SDL_LoadBMP("img/pontoVerde.bmp");
  btgame.musica_menu = Mix_LoadMUS("music/botoes.wav");
  btgame.font = TTF_OpenFont("font/font1.ttf",28);
+ btgame.font2 = TTF_OpenFont("font/font2.ttf",18);
 }
 
 
@@ -68,7 +74,7 @@ void menujogo(SDL_Surface* ecra)
     int ratoX, ratoY,but1 = 0, but2 = 0, but3 = 0,but4= 0, but5 = 0, but6 = 0, but7 = 0;
     int estadoBotao[6] = {0,0,0,0,0,0};
     int butPressionado = 0;
-    int dificuldade = 1;
+    int dificuldade = 4;
 
 
 
@@ -98,13 +104,13 @@ void menujogo(SDL_Surface* ecra)
 
         switch(dificuldade)
         {
-            case 1:
+            case 4:
                 rect.x = 300;
                 break;
-            case 2:
+            case 8:
                 rect.x = 490;
                 break;
-            case 3:
+            case 12:
                 rect.x = 650;
                 break;
         }
@@ -171,12 +177,7 @@ void menujogo(SDL_Surface* ecra)
             ratoY = evento.motion.y;
             sprintf(texto,"X:%i Y:%i",ratoX,ratoY);
             SDL_WM_SetCaption(texto,NULL); //altera o titulo da janela
-        }
 
-        if(evento.type == SDL_MOUSEMOTION)
-        {
-            ratoX = evento.motion.x;
-            ratoY = evento.motion.y;
             if(ratoX > 241 && ratoX < 385 && ratoY > 211 && ratoY < 344){
 
                rect.x = 240;
@@ -249,13 +250,13 @@ void menujogo(SDL_Surface* ecra)
             {
                 if(ratoX > 270 && ratoX < 360)
                 {
-                    dificuldade = 1;
+                    dificuldade = 4;
                 }else if(ratoX > 455 && ratoX < 550)
                 {
-                    dificuldade = 2;
+                    dificuldade = 8;
                 }else if(ratoX > 615 && ratoX < 715)
                 {
-                    dificuldade = 3;
+                    dificuldade = 12;
                 }
             }
         }
@@ -420,8 +421,8 @@ void iniciarJogo(int numeroJogadores, int dificuldade, SDL_Surface *ecra)
     filaUtilizadores fU, fUinicial;
     SDL_Event evento;
     SDL_Rect rect;
-    SDL_Color cor = {0,0,0};
-    SDL_Color corSeleccionado = {0,255,0};
+    SDL_Color cor = {255,0,0};
+    SDL_Color corSeleccionado = {0,0,255};
 
     fUinicial = lerUtilizadores("users.db");
 
@@ -435,10 +436,10 @@ void iniciarJogo(int numeroJogadores, int dificuldade, SDL_Surface *ecra)
         jogadoresSeleccionados = 0;
         fU = fUinicial;
 
-        rect.x = 425;
-        rect.y = 100;
+        rect.x = 485;
+        rect.y = 230;
 
-        SDL_BlitSurface(btgame.fundo2,NULL,ecra,NULL); //fundo
+        SDL_BlitSurface(btgame.fundo4,NULL,ecra,NULL); //fundo
 
 
         //corre a fila para mostrar os jogadores todos
@@ -450,15 +451,15 @@ void iniciarJogo(int numeroJogadores, int dificuldade, SDL_Surface *ecra)
             if(fU->jogador.seleccionado == 1)
                 {
                     jogadoresSeleccionados++;
-                    txt = TTF_RenderText_Solid(btgame.font,fU->jogador.username,corSeleccionado);
+                    txt = TTF_RenderText_Solid(btgame.font2,fU->jogador.username,corSeleccionado);
                 }else{
-                    txt = TTF_RenderText_Solid(btgame.font,fU->jogador.username,cor);
+                    txt = TTF_RenderText_Solid(btgame.font2,fU->jogador.username,cor);
                 }
 
 
             SDL_BlitSurface(txt,NULL,ecra,&rect);
 
-            rect.y = rect.y + 50;
+            rect.y = rect.y + 30;
             fU = fU->proximoJogador;
         }
 
@@ -526,16 +527,18 @@ void jogo(SDL_Surface *ecra, int nJogadores, int nPerguntas, filaUtilizadores fU
     SDL_Surface *txtR4;
     SDL_Rect rect;
     SDL_Color cor = {0,0,0};
+    SDL_Color cor9 = {0,0,255};
     int perguntaActual = 0;
     int totalPerguntas = 0;
     int contPerguntas;
     int ratoX, ratoY;
     int perguntaRandom;
     int activa = 0;
-    int certa = 69;
+    int certa;
     int contRespostas;
     int i;
     int jogadorActual = 0;
+    int contP;
 
     srand(time(NULL));
 
@@ -554,20 +557,30 @@ void jogo(SDL_Surface *ecra, int nJogadores, int nPerguntas, filaUtilizadores fU
     {
 
         SDL_PollEvent(&evento);
-        SDL_BlitSurface(btgame.fundo2,NULL,ecra,NULL);
+        SDL_BlitSurface(btgame.fundo3,NULL,ecra,NULL);
         fU = fUinicial;
         fP = fPinicial;
-        rect.y = 400;
-        rect.x = 50;
+
         perguntaRandom = rand() % totalPerguntas;
 
+        rect.x = 1;
+        rect.y = 355;
+        for(i=0;i<nJogadores;i++) //mostrar jogador actual
+        {
+            if(i==jogadorActual)
+                SDL_BlitSurface(btgame.pontoVerde,NULL,ecra,&rect);
+            rect.y = rect.y + 50;
+        }
+
+        rect.y = 305;
+        rect.x = 45;
         //desenhar utilizadores
         while(fU != NULL)
         {
             if(fU->jogador.seleccionado == 1)
                 {
                     sprintf(nomes,"%s - C(%i) E(%i)",fU->jogador.username,fU->jogador.jogoCertas,fU->jogador.jogoErradas);
-                    txt = TTF_RenderText_Solid(btgame.font,nomes,cor);
+                    txt = TTF_RenderText_Solid(btgame.font2,nomes,cor9);
                     rect.y = rect.y + 50;
                     SDL_BlitSurface(txt,NULL,ecra,&rect);
                 }
@@ -582,7 +595,7 @@ void jogo(SDL_Surface *ecra, int nJogadores, int nPerguntas, filaUtilizadores fU
             {
                 if(contPerguntas == perguntaRandom) //desenha a pergunta e as respostas
                 {
-                    sprintf(texto,"Pergunta: %s",fP->perg.pergunta);
+                    sprintf(texto,"%s",fP->perg.pergunta);
                     txtPergunta = TTF_RenderText_Solid(btgame.font,texto,cor);
                     sprintf(texto,"%s",fP->perg.resposta[0]);
                     txtR[0] = TTF_RenderText_Solid(btgame.font,texto,cor);
@@ -597,14 +610,14 @@ void jogo(SDL_Surface *ecra, int nJogadores, int nPerguntas, filaUtilizadores fU
                 fP = fP->proximaPergunta;
             }
         }
-        rect.x = 170;
-        rect.y = 150;
+        rect.x = 360;
+        rect.y = 160;
         SDL_BlitSurface(txtPergunta,NULL,ecra,&rect);
 
 
 
 
-        rect.x = 200;
+        //rect.x = 500;
 
         if(activa == 0) //verifica se é para gerar uma nova pergunta
         {
@@ -613,15 +626,15 @@ void jogo(SDL_Surface *ecra, int nJogadores, int nPerguntas, filaUtilizadores fU
                 {
                     if(contRespostas==4) contRespostas = 0;
 
-                    if(i>1) rect.x = 650; //posicoes no ecra das repostas
-                    if(i==1 || i==3) {
-                            rect.y = 250;
-                    }else{
-                            rect.y = 320;
-                    }
-                    pos[contRespostas].x = rect.x;
-                    pos[contRespostas].y = rect.y;
-                    pos[contRespostas].pos = contRespostas;
+                    if(i==0) {rect.y = 290;} //posicoes no ecra das repostas
+                    if(i==1) {rect.y = 350;}
+                    if (i==2){rect.y= 410;}
+                    if (i == 3 ){rect.y = 470;}
+
+
+                    pos[i].x = rect.x;
+                    pos[i].y = rect.y;
+                    pos[i].pos = contRespostas;
                     if(contRespostas==0) certa = i;
                     contRespostas++;
 
@@ -644,7 +657,7 @@ void jogo(SDL_Surface *ecra, int nJogadores, int nPerguntas, filaUtilizadores fU
             ratoX = evento.motion.x;
             ratoY = evento.motion.y;
 
-            sprintf(texto,"X:%i Y:%i Certa: %i",ratoX,ratoY,certa);
+            sprintf(texto,"%i/%i X:%i Y:%i Certa: %i",perguntaActual,nPerguntas,ratoX,ratoY,certa);
             SDL_WM_SetCaption(texto,NULL);
         }else if(evento.type == SDL_MOUSEBUTTONDOWN) //clique esquerdo do rato
         {
@@ -654,30 +667,54 @@ void jogo(SDL_Surface *ecra, int nJogadores, int nPerguntas, filaUtilizadores fU
             {
                 if(ratoX > pos[i].x && ratoX < (pos[i].x+140) && ratoY > pos[i].y && ratoY < (pos[i].y+30))
                 {
-                    if(certa == i)
+                    fU=fUinicial;
+                    contP = 0;
+                    FILE *fiU;
+                    fiU = fopen("users.db","w");
+                    while(fU!=NULL)
                     {
-                        sprintf(texto,"%i %i",certa,i);
-                        SDL_WM_SetCaption(texto,NULL);
-                    }else{
-                        sprintf(texto,"%i %i",certa,i);
-                        SDL_WM_SetCaption(texto,NULL);
+                        if(certa == i && contP == jogadorActual)
+                        {
+                            fU->jogador.jogoCertas++;
+                            fU->jogador.respostas_certas++;
+                        }else if(contP == jogadorActual){
+                            fU->jogador.jogoErradas++;
+                            fU->jogador.respostas_erradas++;
+                        }
+                        fprintf(fiU,"%s,%s,%i,%i,%i\n",fU->jogador.username,fU->jogador.password,fU->jogador.admin,fU->jogador.respostas_certas,fU->jogador.respostas_erradas);
+                        fU = fU->proximoJogador;
+                        contP++;
                     }
                     jogadorActual++;
+                    fclose(fiU);
                 }
+
             }
         }
 
         if(jogadorActual == nJogadores)
         {
-            SDL_Delay(2000);
+            SDL_Delay(1000);
             jogadorActual = 0;
             perguntaActual++;
             activa = 0;
+        }
+         if(evento.type == SDL_KEYDOWN) //teclado
+        {
+            switch(evento.key.keysym.sym)
+            {
+            case SDLK_ESCAPE:
+                menujogo(ecra);
+                break;
+            default:
+                break;
+            }
         }
 
         SDL_Flip(ecra);
         SDL_Delay(80);
     }
+
 
     menu(ecra);
 }
