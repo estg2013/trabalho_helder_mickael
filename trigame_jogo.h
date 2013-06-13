@@ -469,6 +469,8 @@ void iniciarJogo(int numeroJogadores, int dificuldade, SDL_Surface *ecra)
             case SDLK_ESCAPE:
                 menujogo(ecra);
                 break;
+            default:
+                break;
             }
         }
 
@@ -482,7 +484,6 @@ void iniciarJogo(int numeroJogadores, int dificuldade, SDL_Surface *ecra)
         }else if(evento.type == SDL_MOUSEBUTTONDOWN)
         {
             fU = fUinicial;
-
             while(fU != NULL)
             {
                 if(ratoX > fU->pos.x && ratoX < (fU->pos.x + 200) && ratoY > fU->pos.y && ratoY < (fU->pos.y + 30))
@@ -512,23 +513,54 @@ void iniciarJogo(int numeroJogadores, int dificuldade, SDL_Surface *ecra)
 
 void jogo(SDL_Surface *ecra, int nJogadores, int nPerguntas, filaUtilizadores fUinicial)
 {
+    srand(time(NULL));
     char texto[100], nomes[200];
     filaUtilizadores fU;
+    filaPerguntas fP, fPinicial;
     SDL_Event evento;
     SDL_Surface *txt = NULL;
+    SDL_Surface *txtPergunta;
+    SDL_Surface *txtR[4];
+    SDL_Surface *txtR2;
+    SDL_Surface *txtR3;
+    SDL_Surface *txtR4;
     SDL_Rect rect;
     SDL_Color cor = {0,0,0};
     int perguntaActual = 0;
+    int totalPerguntas = 0;
+    int contPerguntas;
     int ratoX, ratoY;
-    rect.y = 300;
-    rect.x = 50;
+    int perguntaRandom;
+    int activa = 0;
+    int certa = 69;
+    int contRespostas;
+    int i;
+    int jogadorActual = 0;
+
+    srand(time(NULL));
+
+    posicoes pos[4];
+
+    fPinicial = lerPergunta("perguntas.db");
+
+    fP = fPinicial;
+    while(fP != NULL)
+    {
+        totalPerguntas++;
+        fP = fP->proximaPergunta;
+    }
 
     while(perguntaActual < nPerguntas) //ciclo principal jogo
     {
+
         SDL_PollEvent(&evento);
         SDL_BlitSurface(btgame.fundo2,NULL,ecra,NULL);
         fU = fUinicial;
-        rect.y = 300;
+        fP = fPinicial;
+        rect.y = 400;
+        rect.x = 50;
+        perguntaRandom = rand() % totalPerguntas;
+
         //desenhar utilizadores
         while(fU != NULL)
         {
@@ -543,13 +575,101 @@ void jogo(SDL_Surface *ecra, int nJogadores, int nPerguntas, filaUtilizadores fU
         }
 
 
+        contPerguntas = 0; //inicializa a variavel do random a zero
+        if(activa == 0) //verifica se é para obter uma pergunta nova
+        {
+            while(fP != NULL)
+            {
+                if(contPerguntas == perguntaRandom) //desenha a pergunta e as respostas
+                {
+                    sprintf(texto,"Pergunta: %s",fP->perg.pergunta);
+                    txtPergunta = TTF_RenderText_Solid(btgame.font,texto,cor);
+                    sprintf(texto,"%s",fP->perg.resposta[0]);
+                    txtR[0] = TTF_RenderText_Solid(btgame.font,texto,cor);
+                    sprintf(texto,"%s",fP->perg.resposta[1]);
+                    txtR[1] = TTF_RenderText_Solid(btgame.font,texto,cor);
+                    sprintf(texto,"%s",fP->perg.resposta[2]);
+                    txtR[2] = TTF_RenderText_Solid(btgame.font,texto,cor);
+                    sprintf(texto,"%s",fP->perg.resposta[3]);
+                    txtR[3] = TTF_RenderText_Solid(btgame.font,texto,cor);
+                }
+                contPerguntas++;
+                fP = fP->proximaPergunta;
+            }
+        }
+        rect.x = 170;
+        rect.y = 150;
+        SDL_BlitSurface(txtPergunta,NULL,ecra,&rect);
+
+
+
+
+        rect.x = 200;
+
+        if(activa == 0)
+        {
+            contRespostas = rand() % 4;
+                for(i=0;i<4;i++)
+                {
+                    if(contRespostas==4) contRespostas = 0;
+                    if(contRespostas==0) certa = i;
+
+                    if(i>1) rect.x = 650;
+                    if(i==1 || i==3) {
+                            rect.y = 250;
+                    }else{
+                            rect.y = 320;
+                    }
+                    pos[contRespostas].x = rect.x;
+                    pos[contRespostas].y = rect.y;
+                    pos[contRespostas].pos = contRespostas;
+                    contRespostas++;
+                }
+            activa = 1;
+        }
+
+        for(i=0;i<4;i++)
+        {
+            rect.x = pos[i].x;
+            rect.y = pos[i].y;
+            SDL_BlitSurface(txtR[pos[i].pos],NULL,ecra,&rect);
+        }
+
+
+
+        //movimento do rato
         if(evento.type == SDL_MOUSEMOTION)
         {
             ratoX = evento.motion.x;
             ratoY = evento.motion.y;
 
-            sprintf(texto,"X:%i Y:%i",ratoX,ratoY);
+            sprintf(texto,"X:%i Y:%i Certa: %i",ratoX,ratoY,certa);
             SDL_WM_SetCaption(texto,NULL);
+        }else if(evento.type == SDL_MOUSEBUTTONDOWN) //clique esquerdo do rato
+        {
+            if(ratoX > 14 && ratoX < 287 && ratoY > 12 && ratoY < 68) //voltar para o menu inicial
+                menujogo(ecra);
+            for(i=0;i<4;i++)
+            {
+                if(ratoX > pos[i].x && ratoX < (pos[i].x+140) && ratoY > pos[i].y && ratoY < (pos[i].y+30))
+                {
+                    if(certa == i)
+                    {
+                        SDL_WM_SetCaption("acertou",NULL);
+                    }else{
+                        SDL_WM_SetCaption("errou",NULL);
+                    }
+                    jogadorActual++;
+                }
+            }
+        }
+
+        if(jogadorActual == nJogadores)
+        {
+            SDL_Delay(2000);
+            jogadorActual = 0;
+            perguntaActual++;
+            activa = 0;
         }
 
         SDL_Flip(ecra);
