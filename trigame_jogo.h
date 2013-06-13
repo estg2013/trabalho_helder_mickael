@@ -606,15 +606,14 @@ void jogo(SDL_Surface *ecra, int nJogadores, int nPerguntas, filaUtilizadores fU
 
         rect.x = 200;
 
-        if(activa == 0)
+        if(activa == 0) //verifica se é para gerar uma nova pergunta
         {
-            contRespostas = rand() % 4;
+            contRespostas = rand() % 4; //valor para baralhar as respostas
                 for(i=0;i<4;i++)
                 {
                     if(contRespostas==4) contRespostas = 0;
-                    if(contRespostas==0) certa = i;
 
-                    if(i>1) rect.x = 650;
+                    if(i>1) rect.x = 650; //posicoes no ecra das repostas
                     if(i==1 || i==3) {
                             rect.y = 250;
                     }else{
@@ -623,7 +622,9 @@ void jogo(SDL_Surface *ecra, int nJogadores, int nPerguntas, filaUtilizadores fU
                     pos[contRespostas].x = rect.x;
                     pos[contRespostas].y = rect.y;
                     pos[contRespostas].pos = contRespostas;
+                    if(contRespostas==0) certa = i;
                     contRespostas++;
+
                 }
             activa = 1;
         }
@@ -655,9 +656,11 @@ void jogo(SDL_Surface *ecra, int nJogadores, int nPerguntas, filaUtilizadores fU
                 {
                     if(certa == i)
                     {
-                        SDL_WM_SetCaption("acertou",NULL);
+                        sprintf(texto,"%i %i",certa,i);
+                        SDL_WM_SetCaption(texto,NULL);
                     }else{
-                        SDL_WM_SetCaption("errou",NULL);
+                        sprintf(texto,"%i %i",certa,i);
+                        SDL_WM_SetCaption(texto,NULL);
                     }
                     jogadorActual++;
                 }
